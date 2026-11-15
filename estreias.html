@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estreias & Emissoras • Série RP Hub (Gloob • TFOU • Disney)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        gloob: '#10b981',
+                        tfou: '#ef4444',
+                        disney: '#3b82f6',
+                        darkbg: '#07090e',
+                        cardbg: '#0f1322'
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'shimmer': 'shimmer 2.8s linear infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.85' },
+                            '50%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #07090e;
+            background-image:
+                radial-gradient(circle at 12% 18%, rgba(16, 185, 129, 0.08) 0%, transparent 36%),
+                radial-gradient(circle at 88% 20%, rgba(239, 68, 68, 0.08) 0%, transparent 36%),
+                radial-gradient(circle at 50% 88%, rgba(59, 130, 246, 0.09) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #07090e; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        /* Mobile Date/Time & Touch Target Fix (iOS & Android) */
+        input, select, textarea {
+            font-size: 16px !important;
+            min-height: 48px;
+            color-scheme: dark;
+        }
+
+        input[type="date"],
+        input[type="time"] {
+            position: relative;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(1.3);
+            opacity: 0.9;
+            cursor: pointer;
+            padding: 6px;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* World Premiere Golden Shimmer Badge */
+        .world-premiere-badge {
+            background: linear-gradient(90deg, #f59e0b 0%, #fde047 50%, #f59e0b 100%);
+            background-size: 200% auto;
+            animation: shimmer 2.6s linear infinite;
+            color: #090d16;
+        }
+
+        /* Special Episode Badge */
+        .special-badge-shimmer {
+            background: linear-gradient(90deg, #f59e0b 0%, #ec4899 50%, #f59e0b 100%);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+
+        /* Golden Card Border Glow */
+        .golden-premiere-panel {
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.92) 45%, rgba(15, 23, 42, 0.96) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            box-shadow: 0 10px 40px -15px rgba(245, 158, 11, 0.22);
+        }
+
+        /* Channel Radio Cards */
+        .channel-card-input:checked + .channel-card-gloob {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.24), rgba(6, 78, 59, 0.45));
+            border-color: #10b981;
+            box-shadow: 0 0 20px -4px rgba(16, 185, 129, 0.45);
+        }
+        .channel-card-input:checked + .channel-card-tfou {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.24), rgba(127, 29, 29, 0.45));
+            border-color: #ef4444;
+            box-shadow: 0 0 20px -4px rgba(239, 68, 68, 0.45);
+        }
+        .channel-card-input:checked + .channel-card-disney {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.24), rgba(30, 58, 138, 0.45));
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px -4px rgba(59, 130, 246, 0.45);
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            transition: opacity 0.25s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col selection:bg-amber-500/30 selection:text-amber-200">
+
+    <!-- ==================== MULTI-PAGE TOP NAVBAR ==================== -->
+    <header class="sticky top-0 z-40 bg-[#07090e]/85 backdrop-blur-xl border-b border-slate-800/80 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+
+                <!-- Brand / Logo -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-500 via-rose-500 to-blue-500 p-[2px] shadow-lg group-hover:scale-105 transition-transform">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <i class="fa-solid fa-clapperboard text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-rose-400 to-blue-400 text-lg"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-white">SÉRIE RP HUB</span>
+                            <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">v2.0</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">Gloob • TFOU • Disney Channel</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+                    <a href="index.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-database text-indigo-400"></i> Base de Dados
+                    </a>
+                    <a href="estreias.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 shadow-md flex items-center gap-2 transition">
+                        <i class="fa-solid fa-globe"></i> Estreias & Emissoras
+                    </a>
+                    <a href="calendario.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-regular fa-calendar-days text-cyan-400"></i> Calendário
+                    </a>
+                    <a href="emissoras.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-tv text-pink-400"></i> Emissoras
+                    </a>
+                </nav>
+
+                <!-- Unified Backup / Restore JSON & Mobile Toggle -->
+                <div class="flex items-center gap-2">
+                    <button onclick="exportFullBackup()" title="Exportar Backup Completo (Temporadas + Estreias)" class="p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold flex items-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-download text-amber-400"></i>
+                        <span class="hidden md:inline">Backup Tudo</span>
+                    </button>
+                    <label title="Importar Backup JSON" class="p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold flex items-center gap-2 cursor-pointer transition">
+                        <i class="fa-solid fa-upload text-emerald-400"></i>
+                        <span class="hidden md:inline">Importar</span>
+                        <input type="file" id="importFullInput" accept=".json" onchange="importFullBackup(event)" class="hidden">
+                    </label>
+                    <button onclick="toggleMobileNav()" class="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:bg-slate-800">
+                        <i class="fa-solid fa-bars text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Drawer -->
+            <div id="mobileNavDrawer" class="hidden lg:hidden pb-4 pt-2 border-t border-slate-800/80 animate-fade-up">
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="index.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-indigo-400"></i> Base de Dados
+                    </a>
+                    <a href="estreias.html" class="p-3 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 flex items-center gap-2">
+                        <i class="fa-solid fa-globe"></i> Estreias & Emissoras
+                    </a>
+                    <a href="calendario.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-days text-cyan-400"></i> Calendário
+                    </a>
+                    <a href="emissoras.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-tv text-pink-400"></i> Emissoras
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Page Title Banner -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-[#101526] to-slate-900 border border-slate-800/90 p-6 sm:p-8 shadow-2xl">
+            <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute left-1/3 -bottom-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
+                        <i class="fa-solid fa-crown text-amber-400"></i>
+                        Programação & Estreias Mundiais
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+                        Agendamento de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-amber-300 to-blue-400">Estreias por Emissora</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                        Marca as datas e horários de lançamento no <strong class="text-emerald-400">Gloob</strong>, <strong class="text-red-400">TFOU</strong> e <strong class="text-blue-400">Disney Channel</strong>. O sistema deteta conflitos no mesmo dia e atribui automaticamente a coroa de <strong>Estreia Mundial</strong> à primeira emissora a exibir cada episódio!
+                    </p>
+                </div>
+
+                <!-- Color Legend Pills -->
+                <div class="flex flex-wrap items-center gap-2.5 bg-slate-950/80 border border-slate-800 p-3.5 rounded-2xl">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">Cores oficiais:</span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Gloob
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-bold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> TFOU
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Disney Channel
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empty Episodes Database Alert Banner (Only visible if index.html has 0 episodes) -->
+        <section id="noEpisodesDbAlert" class="hidden rounded-3xl bg-gradient-to-r from-indigo-950/80 via-purple-950/70 to-slate-900 border border-indigo-500/40 p-6 shadow-xl animate-fade-up">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shrink-0 mt-0.5">
+                        <i class="fa-solid fa-database text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Ainda não tens episódios na Base de Dados!</h2>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                            Para selecionares episódios da tua lista oficial aqui, vai primeiro à página <strong>Base de Dados</strong> e cria a tua Temporada 1 e episódios — ou ativa o modo de inserção manual abaixo.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                    <a href="index.html" class="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition">
+                        <i class="fa-solid fa-arrow-left"></i> Cadastrar Episódios
+                    </a>
+                    <button type="button" onclick="enableManualMode()" class="flex-1 md:flex-initial px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-keyboard"></i> Digitar Manualmente
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3 CHANNEL DASHBOARD CARDS ==================== -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+            <!-- GLOOB CARD (GREEN) -->
+            <div class="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-emerald-500/30 p-5 sm:p-6 shadow-xl">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-display font-black text-lg">
+                            G
+                        </div>
+                        <div>
+                            <h3 class="font-display font-extrabold text-lg text-white">Gloob</h3>
+                            <span class="text-[11px] font-semibold text-emerald-400">Brasil • Canal Verde</span>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                        <i class="fa-solid fa-crown text-amber-400 mr-1"></i> <span id="gloobWorldCount">0</span> Mundiais
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Agendados</span>
+                        <span id="gloobTotalCount" class="text-2xl font-extrabold text-white">0</span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Próxima Exibição</span>
+                        <span id="gloobNextDate" class="text-xs font-bold text-emerald-300 mt-1 block truncate">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TFOU CARD (RED) -->
+            <div class="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-red-500/30 p-5 sm:p-6 shadow-xl">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 font-display font-black text-lg">
+                            T
+                        </div>
+                        <div>
+                            <h3 class="font-display font-extrabold text-lg text-white">TFOU</h3>
+                            <span class="text-[11px] font-semibold text-red-400">França • Canal Vermelho</span>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-red-500/15 text-red-300 border border-red-500/30 text-xs font-bold">
+                        <i class="fa-solid fa-crown text-amber-400 mr-1"></i> <span id="tfouWorldCount">0</span> Mundiais
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Agendados</span>
+                        <span id="tfouTotalCount" class="text-2xl font-extrabold text-white">0</span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Próxima Exibição</span>
+                        <span id="tfouNextDate" class="text-xs font-bold text-red-300 mt-1 block truncate">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DISNEY CHANNEL CARD (BLUE) -->
+            <div class="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-blue-500/30 p-5 sm:p-6 shadow-xl">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-display font-black text-lg">
+                            D
+                        </div>
+                        <div>
+                            <h3 class="font-display font-extrabold text-lg text-white">Disney Channel</h3>
+                            <span class="text-[11px] font-semibold text-blue-400">Global • Canal Azul</span>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-blue-500/15 text-blue-300 border border-blue-500/30 text-xs font-bold">
+                        <i class="fa-solid fa-crown text-amber-400 mr-1"></i> <span id="disneyWorldCount">0</span> Mundiais
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Agendados</span>
+                        <span id="disneyTotalCount" class="text-2xl font-extrabold text-white">0</span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-slate-400 block">Próxima Exibição</span>
+                        <span id="disneyNextDate" class="text-xs font-bold text-blue-300 mt-1 block truncate">—</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MAIN WORKSPACE: FORM + EXCLUSIVE WORLD PREMIERES TABLE ==================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+
+            <!-- LEFT COLUMN (5 cols): SCHEDULING FORM -->
+            <section class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                        </div>
+                        <div>
+                            <h2 id="formPanelTitle" class="font-display font-bold text-lg text-white">Agendar Exibição</h2>
+                            <p class="text-[11px] text-slate-400">Define a emissora, data e hora de lançamento</p>
+                        </div>
+                    </div>
+                    <button type="button" id="toggleManualModeBtn" onclick="toggleInputMode()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-300 border border-slate-700 transition cursor-pointer">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> Modo Manual
+                    </button>
+                </div>
+
+                <form id="scheduleForm" onsubmit="handleScheduleSubmit(event)" class="space-y-4 mt-5">
+                    <input type="hidden" id="editBroadcastId">
+
+                    <!-- MODE A: SELECT FROM DATABASE (index.html) -->
+                    <div id="dbSelectFields" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                1. Escolher Temporada <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="seasonSelect" onchange="populateEpisodeDropdown()" class="w-full bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-white outline-none transition">
+                                <!-- Populated from localStorage -->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                2. Escolher Episódio <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="episodeSelect" onchange="updateSelectedEpisodePreview()" class="w-full bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-white outline-none transition">
+                                <!-- Populated from selected season -->
+                            </select>
+                        </div>
+
+                        <!-- Selected Episode Preview Card -->
+                        <div id="selectedEpisodePreview" class="hidden p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-1.5">
+                            <!-- Filled dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- MODE B: MANUAL ENTRY (Fallback if DB is empty or custom episode) -->
+                    <div id="manualEntryFields" class="hidden space-y-3 p-4 rounded-2xl bg-slate-950/80 border border-slate-800">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Temporada *</label>
+                                <input type="number" id="manualSeasonInput" min="1" max="99" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Nº Episódio *</label>
+                                <input type="number" id="manualEpNumInput" min="1" max="999" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Nome do Episódio *</label>
+                            <input type="text" id="manualEpTitleInput" placeholder="Ex: A Grande Revelação" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none">
+                        </div>
+                        <label class="flex items-center gap-2.5 pt-1 cursor-pointer">
+                            <input type="checkbox" id="manualIsSpecialInput" class="w-5 h-5 rounded accent-amber-500">
+                            <span class="text-xs font-bold text-amber-300">Marcar como Episódio Especial (Pt.1/Pt.2)</span>
+                        </label>
+                    </div>
+
+                    <!-- 3. CHANNEL VISUAL SELECTOR CARDS -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                            3. Emissora Responsável <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <!-- Gloob -->
+                            <label class="cursor-pointer">
+                                <input type="radio" name="channelRadio" value="Gloob" checked class="sr-only channel-card-input">
+                                <div class="channel-card-gloob p-3 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 text-center transition-all">
+                                    <span class="w-7 h-7 mx-auto mb-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-display font-black text-xs flex items-center justify-center">G</span>
+                                    <span class="block text-xs font-extrabold text-white">Gloob</span>
+                                    <span class="block text-[10px] text-emerald-400 font-semibold">Verde</span>
+                                </div>
+                            </label>
+
+                            <!-- TFOU -->
+                            <label class="cursor-pointer">
+                                <input type="radio" name="channelRadio" value="TFOU" class="sr-only channel-card-input">
+                                <div class="channel-card-tfou p-3 rounded-2xl bg-slate-950 border border-slate-800 hover:border-red-500/50 text-center transition-all">
+                                    <span class="w-7 h-7 mx-auto mb-1 rounded-lg bg-red-500/20 text-red-400 font-display font-black text-xs flex items-center justify-center">T</span>
+                                    <span class="block text-xs font-extrabold text-white">TFOU</span>
+                                    <span class="block text-[10px] text-red-400 font-semibold">Vermelho</span>
+                                </div>
+                            </label>
+
+                            <!-- Disney Channel -->
+                            <label class="cursor-pointer">
+                                <input type="radio" name="channelRadio" value="Disney Channel" class="sr-only channel-card-input">
+                                <div class="channel-card-disney p-3 rounded-2xl bg-slate-950 border border-slate-800 hover:border-blue-500/50 text-center transition-all">
+                                    <span class="w-7 h-7 mx-auto mb-1 rounded-lg bg-blue-500/20 text-blue-400 font-display font-black text-xs flex items-center justify-center">D</span>
+                                    <span class="block text-xs font-extrabold text-white">Disney</span>
+                                    <span class="block text-[10px] text-blue-400 font-semibold">Azul</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 4. DATE & TIME (MOBILE OPTIMIZED) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="airDateInput" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                4. Data de Exibição <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="date" id="airDateInput" required
+                                class="w-full bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-white outline-none transition">
+                        </div>
+
+                        <div>
+                            <label for="airTimeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                5. Horário <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="time" id="airTimeInput" required value="19:30"
+                                class="w-full bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-white outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- 6. OPTIONAL NOTES -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Notas de Programação (Opcional)
+                        </label>
+                        <input type="text" id="broadcastNotesInput" placeholder="Ex: Especial de Sábado, Estreia Antecipada..."
+                            class="w-full bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition">
+                    </div>
+
+                    <!-- Inline Validation Alert Box -->
+                    <div id="inlineAlertBox" class="hidden p-4 rounded-2xl border text-xs leading-relaxed animate-fade-up"></div>
+
+                    <!-- Submit & Cancel Edit Buttons -->
+                    <div class="flex items-center gap-2.5 pt-2">
+                        <button type="button" id="cancelEditBtn" onclick="resetScheduleForm()" class="hidden px-4 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition cursor-pointer">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="submitScheduleBtn" class="flex-1 py-3.5 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 active:scale-[0.98] text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition cursor-pointer">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <span id="submitBtnLabel">Agendar Lançamento</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- RIGHT COLUMN (7 cols): EXCLUSIVE GOLDEN WORLD PREMIERES TABLE -->
+            <section class="lg:col-span-7 golden-premiere-panel rounded-3xl overflow-hidden shadow-2xl">
+                <div class="p-5 sm:p-6 border-b border-amber-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shadow-inner">
+                            <i class="fa-solid fa-crown text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-display font-extrabold text-lg sm:text-xl text-white">Tabela de Estreias Mundiais</h2>
+                                <span id="worldPremiereTotalBadge" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-extrabold">0</span>
+                            </div>
+                            <p class="text-xs text-amber-200/75">Ordem oficial por episódio (T1 EP01, EP02...) mostrando quem estreou primeiro no mundo</p>
+                        </div>
+                    </div>
+
+                    <a href="calendario.html" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-bold inline-flex items-center justify-center gap-2 transition self-start sm:self-auto">
+                        <i class="fa-regular fa-calendar-days"></i> Ver no Calendário
+                    </a>
+                </div>
+
+                <!-- World Premieres Sequential Table -->
+                <div id="worldPremieresContainer">
+                    <!-- Dynamic content injected here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== FULL BROADCAST SCHEDULE TABLE & FILTERS ==================== -->
+        <section class="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-display font-extrabold text-lg sm:text-xl text-white flex items-center gap-2.5">
+                        <i class="fa-solid fa-tower-broadcast text-cyan-400"></i>
+                        Todos os Agendamentos das 3 Emissoras
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Compara as datas entre Gloob, TFOU e Disney Channel e gere cada transmissão.</p>
+                </div>
+
+                <!-- Filters Bar -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="filterSeasonSelect" onchange="renderAll()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-200 outline-none">
+                        <option value="ALL">Todas as Temporadas</option>
+                    </select>
+
+                    <select id="filterChannelSelect" onchange="renderAll()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-slate-200 outline-none">
+                        <option value="ALL">Todas Emissoras</option>
+                        <option value="Gloob">🟢 Gloob</option>
+                        <option value="TFOU">🔴 TFOU</option>
+                        <option value="Disney Channel">🔵 Disney Channel</option>
+                    </select>
+
+                    <button id="toggleOnlyWorldBtn" onclick="toggleOnlyWorldFilter()" class="px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500/50 text-xs font-bold text-slate-300 flex items-center gap-1.5 transition cursor-pointer">
+                        <i class="fa-solid fa-crown text-amber-400"></i>
+                        <span>Só Estreias Mundiais</span>
+                    </button>
+
+                    <button onclick="openClearAllModal()" title="Apagar todos os agendamentos" class="px-3.5 py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/70 border border-rose-800/40 text-xs font-bold text-rose-300 flex items-center gap-1.5 transition cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span class="hidden sm:inline">Limpar Agenda</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Input inside Full Schedule -->
+            <div class="px-5 sm:px-6 pt-4">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text" id="scheduleSearchInput" oninput="renderAll()" placeholder="Filtrar por título do episódio, emissora ou notas..."
+                        class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition">
+                </div>
+            </div>
+
+            <!-- Schedule Table Body -->
+            <div id="allBroadcastsContainer" class="p-5 sm:p-6">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-[#05070e] py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <p><strong>Série RP Hub</strong> • Painel de Estreias Mundiais (Gloob • TFOU • Disney Channel)</p>
+            <p>Sincronizado com Base de Dados & Calendário</p>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL 1: CONFLICT WARNING MODAL (SAME DAY / SAME TIME) ==================== -->
+    <div id="conflictModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-backdrop">
+        <div class="bg-slate-900 border border-amber-500/50 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl animate-fade-up">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl animate-bounce"></i>
+            </div>
+            <h3 id="conflictModalTitle" class="font-display font-extrabold text-lg sm:text-xl text-white text-center mb-2">
+                Aviso de Conflito de Lançamento!
+            </h3>
+            <div id="conflictModalDetails" class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 text-xs sm:text-sm text-slate-300 space-y-2 mb-6 leading-relaxed">
+                <!-- Filled dynamically -->
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <button type="button" onclick="closeConflictModal()" class="w-full sm:flex-1 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs sm:text-sm transition cursor-pointer">
+                    Ajustar Data/Hora
+                </button>
+                <button type="button" id="forceSaveConflictBtn" class="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:brightness-110 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg transition cursor-pointer">
+                    Agendar Mesmo Assim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: CONFIRM DELETE MODAL ==================== -->
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-backdrop">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-trash-can text-2xl"></i>
+            </div>
+            <h3 id="confirmModalTitle" class="font-bold text-lg text-white mb-2">Tens a certeza?</h3>
+            <p id="confirmModalText" class="text-xs sm:text-sm text-slate-400 mb-6">Esta ação não pode ser desfeita.</p>
+            <div class="flex items-center gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition cursor-pointer">
+                    Cancelar
+                </button>
+                <button id="confirmActionBtn" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg transition cursor-pointer">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full px-4 pointer-events-none"></div>
+
+    <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+    <script>
+        // Shared Storage Keys across all pages
+        const SEASONS_DB_KEY = 'series_rp_seasons_db_v1';
+        const BROADCASTS_DB_KEY = 'series_rp_broadcasts_v1';
+
+        let seasonsDB = [];
+        let broadcastsDB = [];
+        let isManualMode = false;
+        let filterOnlyWorldPremiere = false;
+        let pendingBroadcastPayload = null;
+        let pendingConfirmAction = null;
+
+        // Channel Visual Theme Config (Gloob = Green, TFOU = Red, Disney Channel = Blue)
+        const CHANNEL_THEMES = {
+            'Gloob': {
+                badgeBg: 'bg-emerald-500/15',
+                badgeText: 'text-emerald-300',
+                badgeBorder: 'border-emerald-500/40',
+                dotColor: 'bg-emerald-400',
+                icon: 'G'
+            },
+            'TFOU': {
+                badgeBg: 'bg-red-500/15',
+                badgeText: 'text-red-300',
+                badgeBorder: 'border-red-500/40',
+                dotColor: 'bg-red-500',
+                icon: 'T'
+            },
+            'Disney Channel': {
+                badgeBg: 'bg-blue-500/15',
+                badgeText: 'text-blue-300',
+                badgeBorder: 'border-blue-500/40',
+                dotColor: 'bg-blue-500',
+                icon: 'D'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllData();
+            initFormSelectors();
+            renderAll();
+        });
+
+        /* -------------------- DATA LOADING & SAVING -------------------- */
+        function loadAllData() {
+            try {
+                const rawSeasons = localStorage.getItem(SEASONS_DB_KEY);
+                seasonsDB = rawSeasons ? JSON.parse(rawSeasons) : [];
+            } catch (e) {
+                seasonsDB = [];
+            }
+
+            try {
+                const rawBroadcasts = localStorage.getItem(BROADCASTS_DB_KEY);
+                broadcastsDB = rawBroadcasts ? JSON.parse(rawBroadcasts) : [];
+            } catch (e) {
+                broadcastsDB = [];
+            }
+        }
+
+        function saveBroadcasts() {
+            localStorage.setItem(BROADCASTS_DB_KEY, JSON.stringify(broadcastsDB));
+        }
+
+        function exportFullBackup() {
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                seasons: seasonsDB,
+                broadcasts: broadcastsDB
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `serie_rp_completo_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showToast('Backup completo (Temporadas + Estreias) exportado!', 'success');
+        }
+
+        function importFullBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) {
+                        // Legacy array of seasons
+                        seasonsDB = data;
+                        localStorage.setItem(SEASONS_DB_KEY, JSON.stringify(seasonsDB));
+                    } else if (data && typeof data === 'object') {
+                        if (Array.isArray(data.seasons)) {
+                            seasonsDB = data.seasons;
+                            localStorage.setItem(SEASONS_DB_KEY, JSON.stringify(seasonsDB));
+                        }
+                        if (Array.isArray(data.broadcasts)) {
+                            broadcastsDB = data.broadcasts;
+                            saveBroadcasts();
+                        }
+                    }
+                    initFormSelectors();
+                    renderAll();
+                    showToast('Dados importados e sincronizados com sucesso!', 'success');
+                } catch (err) {
+                    showToast('Erro ao ler ficheiro JSON.', 'error');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        /* -------------------- NAVIGATION -------------------- */
+        function toggleMobileNav() {
+            document.getElementById('mobileNavDrawer').classList.toggle('hidden');
+        }
+
+        /* -------------------- FORM SELECTORS & MODES -------------------- */
+        function getAllEpisodesCount() {
+            return seasonsDB.reduce((sum, s) => sum + (s.episodes ? s.episodes.length : 0), 0);
+        }
+
+        function initFormSelectors() {
+            const noDbAlert = document.getElementById('noEpisodesDbAlert');
+            const seasonSelect = document.getElementById('seasonSelect');
+            const filterSeasonSelect = document.getElementById('filterSeasonSelect');
+
+            const totalEps = getAllEpisodesCount();
+
+            if (seasonsDB.length === 0 || totalEps === 0) {
+                noDbAlert.classList.remove('hidden');
+                if (!isManualMode && seasonsDB.length === 0) {
+                    enableManualMode();
+                }
+            } else {
+                noDbAlert.classList.add('hidden');
+            }
+
+            // Populate Form Season Select
+            if (seasonsDB.length > 0) {
+                seasonSelect.innerHTML = seasonsDB.map(s =>
+                    `<option value="${s.number}">Temporada ${s.number}${s.subtitle ? ' — ' + escapeHtml(s.subtitle) : ''}</option>`
+                ).join('');
+                populateEpisodeDropdown();
+            } else {
+                seasonSelect.innerHTML = `<option value="">Nenhuma temporada na Base de Dados</option>`;
+                document.getElementById('episodeSelect').innerHTML = `<option value="">Sem episódios</option>`;
+            }
+
+            // Populate Filter Season Select (combining DB seasons + scheduled seasons)
+            const seasonNumbers = new Set();
+            seasonsDB.forEach(s => seasonNumbers.add(Number(s.number)));
+            broadcastsDB.forEach(b => seasonNumbers.add(Number(b.seasonNumber)));
+            const sortedSeasons = Array.from(seasonNumbers).sort((a, b) => a - b);
+
+            const currentFilter = filterSeasonSelect.value;
+            filterSeasonSelect.innerHTML = `<option value="ALL">Todas as Temporadas</option>` +
+                sortedSeasons.map(num => `<option value="${num}">Temporada ${num}</option>`).join('');
+            if (sortedSeasons.map(String).includes(currentFilter)) {
+                filterSeasonSelect.value = currentFilter;
+            }
+        }
+
+        function populateEpisodeDropdown() {
+            const seasonNum = parseInt(document.getElementById('seasonSelect').value, 10);
+            const episodeSelect = document.getElementById('episodeSelect');
+            const season = seasonsDB.find(s => Number(s.number) === seasonNum);
+
+            if (!season || !season.episodes || season.episodes.length === 0) {
+                episodeSelect.innerHTML = `<option value="">Esta temporada não tem episódios</option>`;
+                document.getElementById('selectedEpisodePreview').classList.add('hidden');
+                return;
+            }
+
+            episodeSelect.innerHTML = season.episodes.map(ep => {
+                const code = `EP${String(ep.number).padStart(2, '0')}`;
+                const star = ep.isSpecial ? ' ★ [ESPECIAL]' : '';
+                return `<option value="${ep.number}">${code} — ${escapeHtml(ep.title)}${star}</option>`;
+            }).join('');
+
+            updateSelectedEpisodePreview();
+        }
+
+        function updateSelectedEpisodePreview() {
+            const seasonNum = parseInt(document.getElementById('seasonSelect').value, 10);
+            const epNum = parseInt(document.getElementById('episodeSelect').value, 10);
+            const previewBox = document.getElementById('selectedEpisodePreview');
+
+            const season = seasonsDB.find(s => Number(s.number) === seasonNum);
+            const ep = season && season.episodes ? season.episodes.find(e => Number(e.number) === epNum) : null;
+
+            if (!ep || isManualMode) {
+                previewBox.classList.add('hidden');
+                return;
+            }
+
+            const existingSchedules = broadcastsDB.filter(b => Number(b.seasonNumber) === seasonNum && Number(b.episodeNumber) === epNum);
+
+            previewBox.classList.remove('hidden');
+            previewBox.innerHTML = `
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-extrabold text-slate-200">
+                        T${seasonNum} EP${String(epNum).padStart(2, '0')} • ${escapeHtml(ep.title)}
+                    </span>
+                    ${ep.isSpecial ? `
+                        <span class="special-badge-shimmer px-2 py-0.5 rounded-full text-[10px] font-black uppercase text-slate-950">
+                            <i class="fa-solid fa-star text-[9px]"></i> ${escapeHtml(ep.specialLabel || 'ESPECIAL')}
+                        </span>
+                    ` : ''}
+                </div>
+                ${ep.synopsis ? `<p class="text-[11px] text-slate-400 line-clamp-2">${escapeHtml(ep.synopsis)}</p>` : ''}
+                <div class="pt-1 text-[11px] text-slate-400">
+                    ${existingSchedules.length === 0
+                        ? '<span class="text-emerald-400"><i class="fa-solid fa-sparkles mr-1"></i> Ainda não agendado em nenhuma emissora!</span>'
+                        : `<span>Já agendado em: <strong class="text-slate-200">${existingSchedules.map(s => `${s.channel} (${formatDatePT(s.airDate)} ${s.airTime})`).join(', ')}</strong></span>`
+                    }
+                </div>
+            `;
+        }
+
+        function enableManualMode() {
+            isManualMode = true;
+            document.getElementById('dbSelectFields').classList.add('hidden');
+            document.getElementById('manualEntryFields').classList.remove('hidden');
+            document.getElementById('toggleManualModeBtn').innerHTML = `<i class="fa-solid fa-database mr-1 text-indigo-400"></i> Usar Base de Dados`;
+        }
+
+        function toggleInputMode() {
+            if (isManualMode) {
+                if (getAllEpisodesCount() === 0) {
+                    showToast('Adiciona episódios na Base de Dados primeiro ou continua no Modo Manual.', 'warning');
+                    return;
+                }
+                isManualMode = false;
+                document.getElementById('dbSelectFields').classList.remove('hidden');
+                document.getElementById('manualEntryFields').classList.add('hidden');
+                document.getElementById('toggleManualModeBtn').innerHTML = `<i class="fa-solid fa-pen-to-square mr-1"></i> Modo Manual`;
+                updateSelectedEpisodePreview();
+            } else {
+                enableManualMode();
+            }
+        }
+
+        /* -------------------- VALIDATION & CONFLICT ENGINE -------------------- */
+        function handleScheduleSubmit(e) {
+            e.preventDefault();
+            hideInlineAlert();
+
+            const editId = document.getElementById('editBroadcastId').value;
+            const channel = document.querySelector('input[name="channelRadio"]:checked').value;
+            const airDate = document.getElementById('airDateInput').value;
+            const airTime = document.getElementById('airTimeInput').value;
+            const notes = document.getElementById('broadcastNotesInput').value.trim();
+
+            if (!airDate || !airTime) {
+                showInlineAlert('Por favor preenche a data e o horário de exibição.', 'error');
+                return;
+            }
+
+            let seasonNumber, episodeNumber, episodeTitle, isSpecial, specialLabel;
+
+            if (isManualMode) {
+                seasonNumber = parseInt(document.getElementById('manualSeasonInput').value, 10);
+                episodeNumber = parseInt(document.getElementById('manualEpNumInput').value, 10);
+                episodeTitle = document.getElementById('manualEpTitleInput').value.trim();
+                isSpecial = document.getElementById('manualIsSpecialInput').checked;
+                specialLabel = isSpecial ? 'ESPECIAL' : '';
+
+                if (!seasonNumber || !episodeNumber || !episodeTitle) {
+                    showInlineAlert('Preenche a temporada, número e nome do episódio.', 'error');
+                    return;
+                }
+            } else {
+                seasonNumber = parseInt(document.getElementById('seasonSelect').value, 10);
+                episodeNumber = parseInt(document.getElementById('episodeSelect').value, 10);
+                const season = seasonsDB.find(s => Number(s.number) === seasonNumber);
+                const ep = season && season.episodes ? season.episodes.find(x => Number(x.number) === episodeNumber) : null;
+
+                if (!season || !ep) {
+                    showInlineAlert('Seleciona uma temporada e um episódio válidos (ou usa o Modo Manual).', 'error');
+                    return;
+                }
+                episodeTitle = ep.title;
+                isSpecial = !!ep.isSpecial;
+                specialLabel = ep.specialLabel || '';
+            }
+
+            const payload = {
+                id: editId || ('bcast_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)),
+                seasonNumber,
+                episodeNumber,
+                episodeTitle,
+                isSpecial,
+                specialLabel,
+                channel,
+                airDate,
+                airTime,
+                notes
+            };
+
+            // Filter out current record if editing
+            const otherBroadcasts = broadcastsDB.filter(b => b.id !== editId);
+
+            // RULE 1: Block duplicate episode on the SAME channel
+            const sameChannelDuplicate = otherBroadcasts.find(b =>
+                Number(b.seasonNumber) === seasonNumber &&
+                Number(b.episodeNumber) === episodeNumber &&
+                b.channel === channel
+            );
+
+            if (sameChannelDuplicate) {
+                showInlineAlert(
+                    `<strong>Bloqueado!</strong> O episódio <strong>T${seasonNumber} EP${String(episodeNumber).padStart(2, '0')}</strong> já está agendado no <strong>${channel}</strong> para o dia <strong>${formatDatePT(sameChannelDuplicate.airDate)} às ${sameChannelDuplicate.airTime}</strong>. Edita o existente em vez de duplicar.`,
+                    'error'
+                );
+                showToast(`Conflito: ${channel} já tem este episódio agendado!`, 'error');
+                return;
+            }
+
+            // RULE 2: Detect SAME DAY on ANOTHER channel (or exact same date & time tie)
+            const sameDayOtherChannels = otherBroadcasts.filter(b =>
+                Number(b.seasonNumber) === seasonNumber &&
+                Number(b.episodeNumber) === episodeNumber &&
+                b.airDate === airDate &&
+                b.channel !== channel
+            );
+
+            if (sameDayOtherChannels.length > 0) {
+                const exactTimeTie = sameDayOtherChannels.find(b => b.airTime === airTime);
+                const otherListHtml = sameDayOtherChannels.map(b =>
+                    `<div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-slate-900 border border-slate-800">
+                        <span class="font-bold text-white">${b.channel}</span>
+                        <span class="text-amber-300 font-mono text-xs">${formatDatePT(b.airDate)} às ${b.airTime}</span>
+                    </div>`
+                ).join('');
+
+                pendingBroadcastPayload = payload;
+                document.getElementById('conflictModalTitle').textContent = exactTimeTie
+                    ? 'Empate Exato de Data e Hora!'
+                    : 'Mesmo Episódio no Mesmo Dia!';
+
+                document.getElementById('conflictModalDetails').innerHTML = `
+                    <p>Estás a agendar <strong>T${seasonNumber} EP${String(episodeNumber).padStart(2, '0')} ("${escapeHtml(episodeTitle)}")</strong> no <strong>${channel}</strong> para <strong>${formatDatePT(airDate)} às ${airTime}</strong>.</p>
+                    <p class="text-amber-300 font-semibold">${exactTimeTie
+                        ? '⚠️ Há um empate exato de horário! Muda pelo menos 1 minuto para definir quem tem a Estreia Mundial:'
+                        : '⚠️ Este episódio já vai estrear neste mesmo dia noutra emissora:'}</p>
+                    <div class="space-y-1.5 pt-1">${otherListHtml}</div>
+                `;
+
+                document.getElementById('forceSaveConflictBtn').onclick = () => {
+                    commitBroadcast(pendingBroadcastPayload);
+                    closeConflictModal();
+                };
+
+                const modal = document.getElementById('conflictModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                return;
+            }
+
+            // No conflict -> save directly
+            commitBroadcast(payload);
+        }
+
+        function commitBroadcast(payload) {
+            if (!payload) return;
+            const existingIndex = broadcastsDB.findIndex(b => b.id === payload.id);
+            if (existingIndex !== -1) {
+                broadcastsDB[existingIndex] = payload;
+                showToast('Agendamento atualizado com sucesso!', 'success');
+            } else {
+                broadcastsDB.push(payload);
+                showToast(`Estreia agendada no ${payload.channel}!`, 'success');
+            }
+
+            saveBroadcasts();
+            resetScheduleForm();
+            initFormSelectors();
+            renderAll();
+        }
+
+        function closeConflictModal() {
+            const modal = document.getElementById('conflictModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            pendingBroadcastPayload = null;
+        }
+
+        function editBroadcast(id) {
+            const item = broadcastsDB.find(b => b.id === id);
+            if (!item) return;
+
+            document.getElementById('editBroadcastId').value = item.id;
+            document.getElementById('formPanelTitle').textContent = `Editar T${item.seasonNumber} EP${String(item.episodeNumber).padStart(2, '0')}`;
+            document.getElementById('submitBtnLabel').textContent = 'Guardar Alterações';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+
+            // Select channel radio
+            const radio = document.querySelector(`input[name="channelRadio"][value="${item.channel}"]`);
+            if (radio) radio.checked = true;
+
+            document.getElementById('airDateInput').value = item.airDate;
+            document.getElementById('airTimeInput').value = item.airTime;
+            document.getElementById('broadcastNotesInput').value = item.notes || '';
+
+            // Check if episode exists in seasonsDB
+            const seasonInDb = seasonsDB.find(s => Number(s.number) === Number(item.seasonNumber));
+            const epInDb = seasonInDb && seasonInDb.episodes ? seasonInDb.episodes.find(e => Number(e.number) === Number(item.episodeNumber)) : null;
+
+            if (epInDb) {
+                isManualMode = false;
+                document.getElementById('dbSelectFields').classList.remove('hidden');
+                document.getElementById('manualEntryFields').classList.add('hidden');
+                document.getElementById('seasonSelect').value = item.seasonNumber;
+                populateEpisodeDropdown();
+                document.getElementById('episodeSelect').value = item.episodeNumber;
+                updateSelectedEpisodePreview();
+            } else {
+                enableManualMode();
+                document.getElementById('manualSeasonInput').value = item.seasonNumber;
+                document.getElementById('manualEpNumInput').value = item.episodeNumber;
+                document.getElementById('manualEpTitleInput').value = item.episodeTitle;
+                document.getElementById('manualIsSpecialInput').checked = !!item.isSpecial;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetScheduleForm() {
+            document.getElementById('editBroadcastId').value = '';
+            document.getElementById('formPanelTitle').textContent = 'Agendar Exibição';
+            document.getElementById('submitBtnLabel').textContent = 'Agendar Lançamento';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('broadcastNotesInput').value = '';
+            hideInlineAlert();
+            updateSelectedEpisodePreview();
+        }
+
+        function confirmDeleteBroadcast(id) {
+            const item = broadcastsDB.find(b => b.id === id);
+            if (!item) return;
+
+            openConfirmModal(
+                'Remover Agendamento?',
+                `Queres remover T${item.seasonNumber} EP${String(item.episodeNumber).padStart(2, '0')} do canal ${item.channel}?`,
+                () => {
+                    broadcastsDB = broadcastsDB.filter(b => b.id !== id);
+                    saveBroadcasts();
+                    renderAll();
+                    updateSelectedEpisodePreview();
+                    showToast('Agendamento removido.', 'info');
+                }
+            );
+        }
+
+        function openClearAllModal() {
+            if (broadcastsDB.length === 0) {
+                showToast('A agenda já está limpa!', 'info');
+                return;
+            }
+            openConfirmModal(
+                'Limpar Toda a Agenda?',
+                'Isto vai apagar todos os agendamentos de estreia das 3 emissoras (a tua Base de Dados de episódios continua intacta).',
+                () => {
+                    broadcastsDB = [];
+                    saveBroadcasts();
+                    renderAll();
+                    updateSelectedEpisodePreview();
+                    showToast('Agenda limpa com sucesso.', 'info');
+                }
+            );
+        }
+
+        /* -------------------- WORLD PREMIERE CALCULATION ENGINE -------------------- */
+        function computeEnrichedBroadcasts() {
+            // Group broadcasts by Season + Episode key
+            const groups = {};
+
+            broadcastsDB.forEach(item => {
+                // Sync latest title/special status from seasonsDB if available
+                const dbSeason = seasonsDB.find(s => Number(s.number) === Number(item.seasonNumber));
+                const dbEp = dbSeason && dbSeason.episodes ? dbSeason.episodes.find(e => Number(e.number) === Number(item.episodeNumber)) : null;
+
+                const enriched = {
+                    ...item,
+                    episodeTitle: dbEp ? dbEp.title : item.episodeTitle,
+                    isSpecial: dbEp ? !!dbEp.isSpecial : !!item.isSpecial,
+                    specialLabel: dbEp ? (dbEp.specialLabel || '') : (item.specialLabel || ''),
+                    timestamp: new Date(`${item.airDate}T${item.airTime || '00:00'}`).getTime()
+                };
+
+                const key = `${enriched.seasonNumber}-${enriched.episodeNumber}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(enriched);
+            });
+
+            const result = [];
+            const worldPremiereWinners = [];
+
+            Object.values(groups).forEach(group => {
+                // Sort chronologically inside the episode group
+                group.sort((a, b) => a.timestamp - b.timestamp);
+                const earliestTimestamp = group[0].timestamp;
+
+                group.forEach((entry, idx) => {
+                    // Earliest timestamp wins World Premiere (if exact tie, both get flagged)
+                    entry.isWorldPremiere = (entry.timestamp === earliestTimestamp);
+                    entry.isTie = (entry.isWorldPremiere && group.filter(x => x.timestamp === earliestTimestamp).length > 1);
+                    result.push(entry);
+
+                    if (idx === 0) {
+                        worldPremiereWinners.push({
+                            ...entry,
+                            tiedChannels: group.filter(x => x.timestamp === earliestTimestamp).map(x => x.channel)
+                        });
+                    }
+                });
+            });
+
+            // Sort full list chronologically
+            result.sort((a, b) => a.timestamp - b.timestamp);
+
+            // Sort World Premieres strictly by Season -> Episode Number (T1 EP01, T1 EP02...)
+            worldPremiereWinners.sort((a, b) => {
+                if (Number(a.seasonNumber) !== Number(b.seasonNumber)) {
+                    return Number(a.seasonNumber) - Number(b.seasonNumber);
+                }
+                return Number(a.episodeNumber) - Number(b.episodeNumber);
+            });
+
+            return { all: result, worldPremieres: worldPremiereWinners };
+        }
+
+        /* -------------------- RENDERING -------------------- */
+        function toggleOnlyWorldFilter() {
+            filterOnlyWorldPremiere = !filterOnlyWorldPremiere;
+            const btn = document.getElementById('toggleOnlyWorldBtn');
+            if (filterOnlyWorldPremiere) {
+                btn.classList.remove('bg-slate-950', 'text-slate-300', 'border-slate-800');
+                btn.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500/50');
+            } else {
+                btn.classList.add('bg-slate-950', 'text-slate-300', 'border-slate-800');
+                btn.classList.remove('bg-amber-500/20', 'text-amber-300', 'border-amber-500/50');
+            }
+            renderAll();
+        }
+
+        function renderAll() {
+            const { all, worldPremieres } = computeEnrichedBroadcasts();
+            updateChannelStats(all);
+            renderWorldPremieresTable(worldPremieres);
+            renderFullBroadcastsTable(all);
+        }
+
+        function updateChannelStats(allEnriched) {
+            const channels = [
+                { name: 'Gloob', totalId: 'gloobTotalCount', worldId: 'gloobWorldCount', nextId: 'gloobNextDate' },
+                { name: 'TFOU', totalId: 'tfouTotalCount', worldId: 'tfouWorldCount', nextId: 'tfouNextDate' },
+                { name: 'Disney Channel', totalId: 'disneyTotalCount', worldId: 'disneyWorldCount', nextId: 'disneyNextDate' }
+            ];
+
+            const now = Date.now();
+
+            channels.forEach(ch => {
+                const items = allEnriched.filter(x => x.channel === ch.name);
+                const worldWins = items.filter(x => x.isWorldPremiere).length;
+                const upcoming = items.find(x => x.timestamp >= now) || items[items.length - 1];
+
+                document.getElementById(ch.totalId).textContent = items.length;
+                document.getElementById(ch.worldId).textContent = worldWins;
+                document.getElementById(ch.nextId).textContent = upcoming
+                    ? `T${upcoming.seasonNumber} EP${String(upcoming.episodeNumber).padStart(2, '0')} • ${formatDatePT(upcoming.airDate)}`
+                    : 'Sem agendamentos';
+            });
+        }
+
+        function renderWorldPremieresTable(worldPremieres) {
+            const container = document.getElementById('worldPremieresContainer');
+            document.getElementById('worldPremiereTotalBadge').textContent = worldPremieres.length;
+
+            if (worldPremieres.length === 0) {
+                container.innerHTML = `
+                    <div class="p-10 sm:p-14 text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 mb-4">
+                            <i class="fa-solid fa-crown text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">Nenhuma Estreia Mundial calculada</h3>
+                        <p class="text-xs text-slate-400 max-w-sm mx-auto">
+                            Agenda o lançamento dos episódios no formulário ao lado para veres aqui a ordem oficial de estreia no mundo!
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="overflow-x-auto max-h-[520px] overflow-y-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-md text-[11px] font-bold uppercase tracking-wider text-amber-300/90 border-b border-amber-500/25">
+                            <tr>
+                                <th class="py-3.5 px-4 sm:px-5">Episódio</th>
+                                <th class="py-3.5 px-4">Título</th>
+                                <th class="py-3.5 px-4">Emissora Estreante</th>
+                                <th class="py-3.5 px-4 sm:px-5 text-right">Data & Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-amber-500/10 text-xs sm:text-sm">
+                            ${worldPremieres.map(wp => {
+                                const code = `T${wp.seasonNumber} EP${String(wp.episodeNumber).padStart(2, '0')}`;
+                                const theme = CHANNEL_THEMES[wp.channel] || CHANNEL_THEMES['Gloob'];
+
+                                return `
+                                    <tr class="hover:bg-amber-500/10 transition-colors">
+                                        <td class="py-3.5 px-4 sm:px-5 whitespace-nowrap">
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-xs font-extrabold">
+                                                ${code}
+                                            </span>
+                                        </td>
+                                        <td class="py-3.5 px-4">
+                                            <div class="flex flex-wrap items-center gap-1.5">
+                                                <span class="font-bold text-white">${escapeHtml(wp.episodeTitle)}</span>
+                                                ${wp.isSpecial ? `
+                                                    <span class="special-badge-shimmer px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-slate-950">
+                                                        ★ ${escapeHtml(wp.specialLabel || 'ESPECIAL')}
+                                                    </span>
+                                                ` : ''}
+                                            </div>
+                                        </td>
+                                        <td class="py-3.5 px-4 whitespace-nowrap">
+                                            ${wp.tiedChannels && wp.tiedChannels.length > 1 ? `
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 text-xs font-extrabold">
+                                                    <i class="fa-solid fa-handshake"></i> Empate: ${wp.tiedChannels.join(' & ')}
+                                                </span>
+                                            ` : `
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl ${theme.badgeBg} border ${theme.badgeBorder} ${theme.badgeText} text-xs font-extrabold">
+                                                    <span class="w-2 h-2 rounded-full ${theme.dotColor}"></span>
+                                                    ${wp.channel}
+                                                </span>
+                                            `}
+                                        </td>
+                                        <td class="py-3.5 px-4 sm:px-5 text-right whitespace-nowrap">
+                                            <div class="font-bold text-amber-200">${formatDatePT(wp.airDate)}</div>
+                                            <div class="text-[11px] text-slate-400 font-mono">${wp.airTime}</div>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderFullBroadcastsTable(allEnriched) {
+            const container = document.getElementById('allBroadcastsContainer');
+            const seasonFilter = document.getElementById('filterSeasonSelect').value;
+            const channelFilter = document.getElementById('filterChannelSelect').value;
+            const searchQuery = (document.getElementById('scheduleSearchInput').value || '').toLowerCase().trim();
+
+            const filtered = allEnriched.filter(item => {
+                const matchSeason = seasonFilter === 'ALL' || String(item.seasonNumber) === seasonFilter;
+                const matchChannel = channelFilter === 'ALL' || item.channel === channelFilter;
+                const matchWorld = !filterOnlyWorldPremiere || item.isWorldPremiere;
+                const matchSearch = !searchQuery ||
+                    item.episodeTitle.toLowerCase().includes(searchQuery) ||
+                    item.channel.toLowerCase().includes(searchQuery) ||
+                    `t${item.seasonNumber} ep${String(item.episodeNumber).padStart(2, '0')}`.includes(searchQuery) ||
+                    (item.notes && item.notes.toLowerCase().includes(searchQuery));
+                return matchSeason && matchChannel && matchWorld && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center border-2 border-dashed border-slate-800 rounded-2xl">
+                        <i class="fa-regular fa-calendar-xmark text-3xl text-slate-600 mb-3"></i>
+                        <p class="text-sm font-semibold text-slate-400">Nenhum agendamento encontrado com os filtros atuais.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                                <th class="py-3.5 px-4">Data & Hora</th>
+                                <th class="py-3.5 px-4">Emissora</th>
+                                <th class="py-3.5 px-4">Episódio</th>
+                                <th class="py-3.5 px-4">Estatuto</th>
+                                <th class="py-3.5 px-4 hidden md:table-cell">Notas</th>
+                                <th class="py-3.5 px-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/70 text-xs sm:text-sm">
+                            ${filtered.map(item => {
+                                const theme = CHANNEL_THEMES[item.channel] || CHANNEL_THEMES['Gloob'];
+                                const code = `T${item.seasonNumber} EP${String(item.episodeNumber).padStart(2, '0')}`;
+
+                                return `
+                                    <tr class="${item.isWorldPremiere ? 'bg-amber-500/[0.04]' : ''} hover:bg-slate-800/40 transition-colors">
+                                        <!-- Date & Time -->
+                                        <td class="py-4 px-4 whitespace-nowrap">
+                                            <div class="font-bold text-white">${formatDatePT(item.airDate)}</div>
+                                            <div class="text-xs text-slate-400 font-mono"><i class="fa-regular fa-clock mr-1"></i>${item.airTime}</div>
+                                        </td>
+
+                                        <!-- Channel Pill -->
+                                        <td class="py-4 px-4 whitespace-nowrap">
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl ${theme.badgeBg} border ${theme.badgeBorder} ${theme.badgeText} text-xs font-extrabold">
+                                                <span class="w-2.5 h-2.5 rounded-full ${theme.dotColor}"></span>
+                                                ${item.channel}
+                                            </span>
+                                        </td>
+
+                                        <!-- Episode Info -->
+                                        <td class="py-4 px-4">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span class="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 font-mono text-xs font-extrabold text-slate-200">${code}</span>
+                                                <span class="font-bold text-slate-100">${escapeHtml(item.episodeTitle)}</span>
+                                                ${item.isSpecial ? `
+                                                    <span class="special-badge-shimmer px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-slate-950">
+                                                        ★ ${escapeHtml(item.specialLabel || 'ESPECIAL')}
+                                                    </span>
+                                                ` : ''}
+                                            </div>
+                                        </td>
+
+                                        <!-- World Premiere vs Retransmission -->
+                                        <td class="py-4 px-4 whitespace-nowrap">
+                                            ${item.isWorldPremiere ? `
+                                                <span class="world-premiere-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wide shadow-md">
+                                                    <i class="fa-solid fa-crown"></i>
+                                                    ${item.isTie ? 'Estreia Mundial (Empate)' : 'Estreia Mundial'}
+                                                </span>
+                                            ` : `
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-slate-400 text-[11px] font-semibold">
+                                                    <i class="fa-solid fa-tv"></i> Exibição Local
+                                                </span>
+                                            `}
+                                        </td>
+
+                                        <!-- Notes -->
+                                        <td class="py-4 px-4 hidden md:table-cell text-xs text-slate-400 max-w-xs truncate">
+                                            ${item.notes ? escapeHtml(item.notes) : '<span class="text-slate-600 italic">—</span>'}
+                                        </td>
+
+                                        <!-- Actions -->
+                                        <td class="py-4 px-4 text-right whitespace-nowrap">
+                                            <div class="inline-flex items-center gap-1.5">
+                                                <button onclick="editBroadcast('${item.id}')" title="Editar Data/Hora" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs transition cursor-pointer">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                                <button onclick="confirmDeleteBroadcast('${item.id}')" title="Remover" class="p-2 rounded-lg bg-rose-950/50 hover:bg-rose-900/70 text-rose-400 border border-rose-800/40 text-xs transition cursor-pointer">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        /* -------------------- ALERTS, MODALS & HELPERS -------------------- */
+        function showInlineAlert(htmlMsg, type = 'error') {
+            const box = document.getElementById('inlineAlertBox');
+            box.className = `p-4 rounded-2xl border text-xs leading-relaxed animate-fade-up ${
+                type === 'error'
+                    ? 'bg-rose-950/80 border-rose-500/50 text-rose-200'
+                    : 'bg-amber-950/80 border-amber-500/50 text-amber-200'
+            }`;
+            box.innerHTML = htmlMsg;
+            box.classList.remove('hidden');
+        }
+
+        function hideInlineAlert() {
+            document.getElementById('inlineAlertBox').classList.add('hidden');
+        }
+
+        function openConfirmModal(title, text, onConfirm) {
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalText').textContent = text;
+            pendingConfirmAction = onConfirm;
+
+            document.getElementById('confirmActionBtn').onclick = () => {
+                if (pendingConfirmAction) pendingConfirmAction();
+                closeConfirmModal();
+            };
+
+            const modal = document.getElementById('confirmModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            pendingConfirmAction = null;
+        }
+
+        function formatDatePT(dateStr) {
+            if (!dateStr) return '—';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            const styles = {
+                success: 'bg-emerald-950/95 border-emerald-500/60 text-emerald-200',
+                error: 'bg-rose-950/95 border-rose-500/60 text-rose-200',
+                warning: 'bg-amber-950/95 border-amber-500/60 text-amber-200',
+                info: 'bg-indigo-950/95 border-indigo-500/60 text-indigo-200'
+            };
+
+            const icons = {
+                success: 'fa-circle-check text-emerald-400',
+                error: 'fa-circle-xmark text-rose-400',
+                warning: 'fa-triangle-exclamation text-amber-400',
+                info: 'fa-circle-info text-indigo-400'
+            };
+
+            toast.className = `pointer-events-auto flex items-center gap-3 p-3.5 rounded-2xl border shadow-2xl backdrop-blur-md text-xs sm:text-sm font-semibold transition-all duration-300 transform translate-y-4 opacity-0 ${styles[type] || styles.info}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icons[type] || icons.info} text-base"></i>
+                <span class="flex-1">${message}</span>
+            `;
+
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
