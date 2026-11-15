@@ -1,820 +1,1135 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Lançamentos RP - Gloob, TFOU & Disney Channel</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Base de Dados Oficial • Série RP Hub (Gloob • TFOU • Disney)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                     colors: {
                         gloob: '#ff0055',
                         tfou: '#00d2ff',
-                        disney: '#7000ff'
+                        disney: '#7000ff',
+                        darkbg: '#070913',
+                        cardbg: '#0f1322'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
                     }
                 }
             }
         }
     </script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070913;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 0, 85, 0.07) 0%, transparent 35%),
+                radial-gradient(circle at 85% 25%, rgba(0, 210, 255, 0.07) 0%, transparent 35%),
+                radial-gradient(circle at 50% 85%, rgba(112, 0, 255, 0.08) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #070913; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        /* Mobile Input Optimization (No iOS Zoom & Big Touch Targets) */
+        input, select, textarea {
+            font-size: 16px !important;
+            min-height: 48px;
+            color-scheme: dark;
+        }
+
+        /* Special Episode Row Styling */
+        .special-episode-row {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(236, 72, 153, 0.08) 50%, rgba(15, 19, 34, 0.4) 100%);
+            border-left: 4px solid #f59e0b;
+            position: relative;
+        }
+        .special-episode-row:hover {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(236, 72, 153, 0.13) 50%, rgba(30, 41, 59, 0.5) 100%);
+        }
+
+        /* Shimmer effect for Special Badge */
+        .badge-shimmer {
+            background: linear-gradient(90deg, #f59e0b 0%, #ec4899 50%, #f59e0b 100%);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+
+        /* Premiered Season Glow */
+        .season-premiered-glow {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+        }
+
+        /* Modal Backdrop Blur Transition */
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="text-slate-100 min-h-screen flex flex-col selection:bg-pink-500/30 selection:text-pink-200">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-gradient-to-tr from-pink-600 via-purple-600 to-cyan-500 rounded-xl text-white shadow-md">
-                    <i class="fa-solid fa-tv text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight text-white flex items-center gap-2">
-                        Central de Estreias RP 
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-indigo-300 border border-slate-700">Gloob • TFOU • Disney</span>
-                    </h1>
-                    <p class="text-xs text-slate-400">Organizador de Lançamentos de Série</p>
+    <!-- ==================== MULTI-PAGE TOP NAVBAR ==================== -->
+    <header class="sticky top-0 z-40 bg-[#070913]/85 backdrop-blur-xl border-b border-slate-800/80 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                
+                <!-- Brand / Logo -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-pink-600 via-purple-600 to-cyan-500 p-[2px] shadow-lg group-hover:scale-105 transition-transform">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <i class="fa-solid fa-clapperboard text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 text-lg"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-white">SÉRIE RP HUB</span>
+                            <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">v2.0</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">Gloob • TFOU • Disney Channel</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links (Multi-Page Architecture) -->
+                <nav class="hidden lg:flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+                    <!-- Active Page: index.html -->
+                    <a href="index.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md flex items-center gap-2 transition">
+                        <i class="fa-solid fa-database"></i> Base de Dados
+                    </a>
+                    <!-- Future Page 2: estreias.html -->
+                    <a href="estreias.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-globe text-amber-400"></i> Estreias Mundiais
+                    </a>
+                    <!-- Future Page 3: calendario.html -->
+                    <a href="calendario.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-regular fa-calendar-days text-cyan-400"></i> Calendário
+                    </a>
+                    <!-- Future Page 4: emissoras.html -->
+                    <a href="emissoras.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-tv text-pink-400"></i> Emissoras
+                    </a>
+                </nav>
+
+                <!-- Backup / JSON Tools & Mobile Menu Button -->
+                <div class="flex items-center gap-2">
+                    <button onclick="exportDatabase()" title="Fazer Backup JSON" class="p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-download text-indigo-400"></i>
+                        <span class="hidden md:inline">Backup</span>
+                    </button>
+                    <label title="Restaurar Backup JSON" class="p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold flex items-center gap-2 cursor-pointer transition">
+                        <i class="fa-solid fa-upload text-emerald-400"></i>
+                        <span class="hidden md:inline">Importar</span>
+                        <input type="file" id="importInput" accept=".json" onchange="importDatabase(event)" class="hidden">
+                    </label>
+                    <!-- Mobile Nav Drawer Toggle -->
+                    <button onclick="toggleMobileNav()" class="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:bg-slate-800">
+                        <i class="fa-solid fa-bars text-base"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button onclick="exportData()" title="Exportar dados em JSON" class="px-3 py-1.5 text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Exportar</span>
-                </button>
-                <label title="Importar ficheiro JSON" class="px-3 py-1.5 text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-upload"></i> <span class="hidden sm:inline">Importar</span>
-                    <input type="file" id="importFileInput" onchange="importData(event)" class="hidden" accept=".json">
-                </label>
-                <button onclick="confirmClearData()" title="Reset total" class="px-3 py-1.5 text-xs sm:text-sm bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded-lg border border-rose-800/50 transition flex items-center gap-2">
-                    <i class="fa-solid fa-trash"></i> <span class="hidden sm:inline">Reset</span>
-                </button>
+
+            <!-- Mobile Navigation Bar (Collapsible) -->
+            <div id="mobileNavDrawer" class="hidden lg:hidden pb-4 pt-2 border-t border-slate-800/80 animate-fade-in-up">
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="index.html" class="p-3 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-database"></i> Base de Dados
+                    </a>
+                    <a href="estreias.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-globe text-amber-400"></i> Estreias Mundiais
+                    </a>
+                    <a href="calendario.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-days text-cyan-400"></i> Calendário
+                    </a>
+                    <a href="emissoras.html" class="p-3 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-tv text-pink-400"></i> Emissoras
+                    </a>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Notification Toast Banner Container -->
-    <div id="notificationContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-md w-full px-4"></div>
-
-    <!-- Main Content Container -->
+    <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        <!-- Conflict Warning Alert Box -->
-        <div id="conflictAlertBox" class="hidden bg-amber-950/90 border-2 border-amber-500 text-amber-200 p-4 rounded-xl shadow-2xl relative">
-            <div class="flex items-start gap-3">
-                <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg">
-                    <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                    <h3 class="font-bold text-amber-400 text-base">Alerta de Conflito de Agendamento!</h3>
-                    <p id="conflictAlertMessage" class="text-sm mt-1 text-amber-200/90"></p>
-                </div>
-                <button onclick="closeConflictAlert()" class="text-amber-400 hover:text-amber-100 p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-        </div>
+        <!-- Hero / Page Header & Global Stats -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-[#11162b] to-slate-900 border border-slate-800/90 p-6 sm:p-8 shadow-2xl">
+            <div class="absolute -right-16 -top-16 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Upper Layout Grid: Form + Stats Overview -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Agendamento Form Column -->
-            <section class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                <div class="flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">
-                    <i class="fa-regular fa-calendar-plus text-indigo-400 text-lg"></i>
-                    <h2 class="font-bold text-lg text-slate-100">Agendar Episódio</h2>
+            <div class="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 text-xs font-bold">
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+                        Catálogo Oficial da Série
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+                        Base de Dados de <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">Temporadas & Episódios</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                        Cria as tabelas de cada temporada, define quais já estrearam e destaca os episódios especiais (Parte 1, Parte 2, Finais Duplos). Tudo fica guardado automaticamente para usares nas páginas de <strong>Estreias Mundiais</strong> e <strong>Calendário</strong>.
+                    </p>
                 </div>
 
-                <form id="scheduleForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                    <!-- Temporada e Episódio -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                                Temporada <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 focus-within:border-indigo-500 rounded-lg px-2.5 py-2">
-                                <span class="text-xs font-bold text-slate-500">T</span>
-                                <input type="number" id="seasonNumber" min="1" max="99" placeholder="Ex: 1" required
-                                    class="w-full bg-transparent text-sm text-slate-100 outline-none">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                                Episódio <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 focus-within:border-indigo-500 rounded-lg px-2.5 py-2">
-                                <span class="text-xs font-bold text-slate-500">EP</span>
-                                <input type="number" id="epNumber" min="1" max="999" placeholder="Ex: 1" required
-                                    class="w-full bg-transparent text-sm text-slate-100 outline-none">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Título do Episódio -->
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                            Nome do Episódio (Opcional)
-                        </label>
-                        <input type="text" id="epTitle" placeholder="Ex: A Origem - Parte 1" 
-                            class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
-                    </div>
-
-                    <!-- Emissora Selection -->
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                            Emissora <span class="text-rose-500">*</span>
-                        </label>
-                        <select id="networkSelect" required class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition cursor-pointer">
-                            <option value="" disabled selected>Selecionar Emissora...</option>
-                            <option value="Gloob" class="text-pink-400">Gloob (Brasil)</option>
-                            <option value="TFOU" class="text-cyan-400">TFOU (França)</option>
-                            <option value="Disney Channel" class="text-purple-400">Disney Channel (Internacional)</option>
-                        </select>
-                    </div>
-
-                    <!-- Data e Hora -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                                Data <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="date" id="airDate" required class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                                Hora <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="time" id="airTime" required class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
-                        </div>
-                    </div>
-
-                    <!-- Idioma / Notas de RP -->
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                            Idioma / Notas RP (Opcional)
-                        </label>
-                        <input type="text" id="notes" placeholder="Ex: Dublado em PT-BR, Inédito..." class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-600 outline-none transition">
-                    </div>
-
-                    <!-- Botão Submeter -->
-                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-semibold py-2.5 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus-circle"></i> Registar Agendamento
+                <!-- Primary Action Buttons -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="openSeasonModal()" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:brightness-110 active:scale-[0.98] text-white font-bold text-sm shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2.5 transition-all cursor-pointer">
+                        <i class="fa-solid fa-folder-plus text-base"></i>
+                        Nova Temporada
                     </button>
-                </form>
-            </section>
-
-            <!-- Cards / Status das 3 Emissoras -->
-            <section class="lg:col-span-7 flex flex-col justify-between gap-4">
-                
-                <!-- Status Header / Summary per Network -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Gloob Card -->
-                    <div class="bg-slate-900/90 border-l-4 border-pink-500 border-t border-r border-b border-slate-800 rounded-xl p-4 shadow-lg">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-bold text-pink-400 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-bolt"></i> GLOOB
-                            </span>
-                            <span id="badgeGloobCount" class="text-[11px] bg-pink-950 text-pink-300 font-bold px-2 py-0.5 rounded-full border border-pink-800">0 agendados</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mb-1">Estreias Mundiais:</p>
-                        <div class="text-3xl font-black text-slate-100 flex items-center gap-2">
-                            <span id="gloobPremierCount">0</span>
-                            <i class="fa-solid fa-globe text-xs text-amber-400" title="Estreias Mundiais"></i>
-                        </div>
-                    </div>
-
-                    <!-- TFOU Card -->
-                    <div class="bg-slate-900/90 border-l-4 border-cyan-400 border-t border-r border-b border-slate-800 rounded-xl p-4 shadow-lg">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-bold text-cyan-400 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-tower-broadcast"></i> TFOU
-                            </span>
-                            <span id="badgeTfouCount" class="text-[11px] bg-cyan-950 text-cyan-300 font-bold px-2 py-0.5 rounded-full border border-cyan-800">0 agendados</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mb-1">Estreias Mundiais:</p>
-                        <div class="text-3xl font-black text-slate-100 flex items-center gap-2">
-                            <span id="tfouPremierCount">0</span>
-                            <i class="fa-solid fa-globe text-xs text-amber-400" title="Estreias Mundiais"></i>
-                        </div>
-                    </div>
-
-                    <!-- Disney Channel Card -->
-                    <div class="bg-slate-900/90 border-l-4 border-purple-500 border-t border-r border-b border-slate-800 rounded-xl p-4 shadow-lg">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-bold text-purple-400 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Disney Channel
-                            </span>
-                            <span id="badgeDisneyCount" class="text-[11px] bg-purple-950 text-purple-300 font-bold px-2 py-0.5 rounded-full border border-purple-800">0 agendados</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mb-1">Estreias Mundiais:</p>
-                        <div class="text-3xl font-black text-slate-100 flex items-center gap-2">
-                            <span id="disneyPremierCount">0</span>
-                            <i class="fa-solid fa-globe text-xs text-amber-400" title="Estreias Mundiais"></i>
-                        </div>
-                    </div>
+                    <button id="headerAddEpBtn" onclick="openEpisodeModal()" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-100 border border-slate-700 font-bold text-sm shadow-lg flex items-center justify-center gap-2.5 transition-all cursor-pointer">
+                        <i class="fa-solid fa-plus text-cyan-400"></i>
+                        Adicionar Episódio
+                    </button>
                 </div>
-
-                <!-- Info Box about Auto-Detection System -->
-                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 flex items-start gap-4">
-                    <div class="p-3 bg-indigo-950/60 text-indigo-400 border border-indigo-800/50 rounded-xl">
-                        <i class="fa-solid fa-trophy text-2xl text-amber-400"></i>
-                    </div>
-                    <div class="space-y-1">
-                        <h4 class="font-semibold text-slate-200 text-sm">Regra da Estreia Mundial</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            O selo de <span class="text-amber-400 font-medium">Estreia Mundial</span> é atribuído à emissora que exibir aquele combo de <strong>[Temporada + Episódio]</strong> na data e hora <strong>mais antiga</strong> de todas. A tabela abaixo organiza todos os episódios por ordem cronológica!
-                        </p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- NEW SECTION: DEDICATED WORLD PREMIERE TABLE (ORDERED BY EPISODE) -->
-        <section class="bg-gradient-to-b from-amber-950/30 to-slate-900/90 border-2 border-amber-500/30 rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-amber-500/20 bg-amber-950/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="p-2.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl">
-                        <i class="fa-solid fa-globe text-xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-lg text-amber-300 flex items-center gap-2">
-                            Ordem das Estreias Mundiais (Por Episódio)
-                        </h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Mostra apenas quem ganhou a Estreia Mundial de cada episódio, ordenado por T1 EP1, T1 EP2, etc.</p>
-                    </div>
-                </div>
-                <span id="worldPremieresTotalBadge" class="self-start md:self-auto px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-full">
-                    0 Estreias Registadas
-                </span>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-300">
-                    <thead class="bg-slate-950/90 text-xs text-amber-400/80 uppercase tracking-wider border-b border-amber-500/20">
-                        <tr>
-                            <th class="py-3.5 px-4 font-semibold">Ordem (T & EP)</th>
-                            <th class="py-3.5 px-4 font-semibold">Nome do Episódio</th>
-                            <th class="py-3.5 px-4 font-semibold">Emissora Vencedora</th>
-                            <th class="py-3.5 px-4 font-semibold">Data & Hora Mundial</th>
-                            <th class="py-3.5 px-4 font-semibold">Notas / Idioma</th>
-                        </tr>
-                    </thead>
-                    <tbody id="worldPremiereTableBody" class="divide-y divide-amber-500/10">
-                        <!-- World Premiere entries dynamically injected here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- World Premiere Empty State -->
-            <div id="worldPremiereEmptyState" class="p-8 text-center">
-                <p class="text-xs text-slate-500">Nenhuma estreia mundial calculada ainda. Agenda episódios abaixo para ver o mapa global de estreias!</p>
+            <!-- Quick Overview Counters -->
+            <div class="relative grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 border-t border-slate-800/80">
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4">
+                    <div class="text-xs text-slate-400 font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-indigo-400"></i> Temporadas
+                    </div>
+                    <div id="statTotalSeasons" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</div>
+                </div>
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4">
+                    <div class="text-xs text-slate-400 font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i> Estreadas
+                    </div>
+                    <div id="statPremieredSeasons" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">0</div>
+                </div>
+                <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4">
+                    <div class="text-xs text-slate-400 font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-film text-cyan-400"></i> Total Episódios
+                    </div>
+                    <div id="statTotalEpisodes" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</div>
+                </div>
+                <div class="bg-slate-950/60 border border-amber-500/20 rounded-2xl p-4">
+                    <div class="text-xs text-amber-300/90 font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-star text-amber-400"></i> Especiais (Pt.1/Pt.2)
+                    </div>
+                    <div id="statSpecialEpisodes" class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">0</div>
+                </div>
             </div>
         </section>
 
-        <!-- Lower Section: Filters & All Schedules Table -->
-        <section class="bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-            
-            <!-- Table Header Bar & Filters -->
-            <div class="p-6 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Search & Filter Toolbar -->
+        <section id="filterToolbar" class="hidden flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/70 border border-slate-800 p-4 rounded-2xl">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                <input type="text" id="searchInput" oninput="renderSeasons()" placeholder="Pesquisar episódio por nome, número ou etiqueta especial..." 
+                    class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition">
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="filterSpecialsBtn" onclick="toggleSpecialsFilter()" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500/50 text-xs font-bold text-slate-300 flex items-center justify-center gap-2 transition cursor-pointer">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span>Só Especiais</span>
+                </button>
+                <button onclick="openResetConfirmModal()" title="Limpar Base de Dados" class="px-4 py-3 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/40 text-xs font-bold text-rose-300 flex items-center justify-center gap-2 transition cursor-pointer">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span class="hidden md:inline">Limpar Tudo</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SEASONS CONTAINER ==================== -->
+        <div id="seasonsContainer" class="space-y-8">
+            <!-- Dynamic Season Tables injected here -->
+        </div>
+
+        <!-- ==================== EMPTY STATE (INITIAL 100% CLEAN) ==================== -->
+        <section id="emptyDatabaseState" class="bg-slate-900/60 border-2 border-dashed border-slate-800 rounded-3xl p-10 sm:p-16 text-center animate-fade-in-up">
+            <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600/20 to-pink-600/20 border border-indigo-500/30 flex items-center justify-center mb-6 shadow-inner">
+                <i class="fa-solid fa-clapperboard text-3xl text-indigo-400"></i>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">A tua Base de Dados está pronta!</h2>
+            <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-8 leading-relaxed">
+                Ainda não criaste nenhuma temporada. Começa por criar a <strong>Temporada 1</strong> para organizar a lista oficial de episódios e marcar os teus especiais.
+            </p>
+            <button onclick="openSeasonModal()" class="px-6 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:brightness-110 text-white font-bold text-sm shadow-xl shadow-purple-600/25 inline-flex items-center gap-2.5 transition transform hover:-translate-y-0.5 cursor-pointer">
+                <i class="fa-solid fa-folder-plus"></i> Criar Temporada 1
+            </button>
+        </section>
+
+        <!-- Bottom Navigation Next-Step Banner -->
+        <section class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/20 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div class="hidden sm:flex w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-rocket text-lg"></i>
+                </div>
                 <div>
-                    <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-indigo-400"></i> Todos os Agendamentos (Gloob, TFOU, Disney)
-                    </h2>
-                    <p class="text-xs text-slate-400 mt-0.5">Lista completa de exibições incluindo retransmissões locais</p>
-                </div>
-
-                <!-- Filter Controls -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <!-- Filter by Season -->
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs text-slate-400 font-medium hidden sm:inline">Temporada:</label>
-                        <select id="filterSeason" onchange="renderSchedule()" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-indigo-500 outline-none">
-                            <option value="ALL">Todas as Temporadas</option>
-                        </select>
-                    </div>
-
-                    <!-- Filter by Network -->
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs text-slate-400 font-medium hidden sm:inline">Emissora:</label>
-                        <select id="filterNetwork" onchange="renderSchedule()" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-indigo-500 outline-none">
-                            <option value="ALL">Todas as Emissoras</option>
-                            <option value="Gloob">Gloob</option>
-                            <option value="TFOU">TFOU</option>
-                            <option value="Disney Channel">Disney Channel</option>
-                        </select>
-                    </div>
-
-                    <!-- Filter by Episode -->
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs text-slate-400 font-medium hidden sm:inline">Episódio:</label>
-                        <select id="filterEpisode" onchange="renderSchedule()" class="bg-slate-950 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-indigo-500 outline-none">
-                            <option value="ALL">Todos os Episódios</option>
-                        </select>
-                    </div>
+                    <h3 class="text-sm font-bold text-white">Já tens os episódios organizados?</h3>
+                    <p class="text-xs text-slate-400">Avança para o painel de lançamentos para agendar datas no Gloob, TFOU e Disney Channel.</p>
                 </div>
             </div>
-
-            <!-- Table Container -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-300">
-                    <thead class="bg-slate-950/80 text-xs text-slate-400 uppercase tracking-wider border-b border-slate-800">
-                        <tr>
-                            <th class="py-3.5 px-4 font-semibold">Temporada & Episódio</th>
-                            <th class="py-3.5 px-4 font-semibold">Emissora</th>
-                            <th class="py-3.5 px-4 font-semibold">Data / Hora Exibição</th>
-                            <th class="py-3.5 px-4 font-semibold">Estatuto de Lançamento</th>
-                            <th class="py-3.5 px-4 font-semibold">Notas / Idioma</th>
-                            <th class="py-3.5 px-4 font-semibold text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scheduleTableBody" class="divide-y divide-slate-800/60">
-                        <!-- Items dynamically injected here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden p-12 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 text-slate-500 mb-4">
-                    <i class="fa-regular fa-calendar-xmark text-3xl"></i>
-                </div>
-                <h3 class="text-base font-semibold text-slate-300">Nenhum agendamento encontrado</h3>
-                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Adiciona um novo lançamento para a Gloob, TFOU ou Disney Channel para começar a organizar.</p>
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                <a href="estreias.html" class="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-globe"></i> Ir para Estreias
+                </a>
+                <a href="calendario.html" class="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 text-xs font-bold flex items-center justify-center gap-2 transition">
+                    <i class="fa-regular fa-calendar"></i> Ver Calendário
+                </a>
             </div>
         </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 border-t border-slate-800 py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            Painel de RP - Gloob • TFOU • Disney Channel &copy; <span id="currentYear"></span>
+    <footer class="border-t border-slate-800/80 bg-[#05070f] py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <p><strong>Série RP Hub</strong> • Base de Dados Central (Gloob • TFOU • Disney Channel)</p>
+            <p>Guardado localmente no teu dispositivo</p>
         </div>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- ==================== MODAL 1: CREATE / EDIT SEASON ==================== -->
+    <div id="seasonModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 modal-backdrop">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl modal-content">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                        <i class="fa-solid fa-folder-plus"></i>
+                    </div>
+                    <h3 id="seasonModalTitle" class="font-bold text-lg text-white">Nova Temporada</h3>
+                </div>
+                <button onclick="closeSeasonModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="seasonForm" onsubmit="handleSeasonSubmit(event)" class="space-y-4 mt-5">
+                <input type="hidden" id="editSeasonId">
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                        Número da Temporada <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="number" id="seasonNumberInput" min="1" max="99" required placeholder="Ex: 1"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 rounded-xl px-4 py-2.5 text-white outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                        Subtítulo / Arco da Temporada (Opcional)
+                    </label>
+                    <input type="text" id="seasonTitleInput" placeholder="Ex: O Despertar dos Heróis"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 outline-none transition">
+                </div>
+
+                <!-- Switch: Temporada Estreada -->
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3">
+                    <div>
+                        <span class="block text-sm font-bold text-slate-200">Temporada Estreada?</span>
+                        <span class="text-xs text-slate-400">Marca se esta temporada já começou a ser exibida.</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="seasonPremieredInput" class="sr-only peer">
+                        <div class="w-12 h-7 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+
+                <div class="flex items-center gap-3 pt-3">
+                    <button type="button" onclick="closeSeasonModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 text-white font-bold text-sm shadow-lg transition">
+                        Guardar Temporada
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: ADD / EDIT EPISODE ==================== -->
+    <div id="episodeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 modal-backdrop overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl modal-content my-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                        <i class="fa-solid fa-film"></i>
+                    </div>
+                    <h3 id="episodeModalTitle" class="font-bold text-lg text-white">Adicionar Episódio</h3>
+                </div>
+                <button onclick="closeEpisodeModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="episodeForm" onsubmit="handleEpisodeSubmit(event)" class="space-y-4 mt-5">
+                <input type="hidden" id="editEpisodeId">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Select Season -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Temporada <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="epSeasonSelect" required class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-500 rounded-xl px-3.5 py-2.5 text-white outline-none transition">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Episode Number -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Nº do Episódio <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="number" id="epNumberInput" min="1" max="999" required placeholder="Ex: 1"
+                            class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-white outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Episode Title -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                        Título do Episódio <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="epTitleInput" required placeholder="Ex: A Batalha Final - Parte 1"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 outline-none transition">
+                </div>
+
+                <!-- SPECIAL EPISODE TOGGLE CARD -->
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-slate-950 border border-amber-500/30 space-y-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                                <i class="fa-solid fa-star"></i>
+                            </span>
+                            <div>
+                                <span class="block text-sm font-bold text-amber-300">Episódio Especial?</span>
+                                <span class="text-[11px] text-slate-400">Destaca Parte 1, Parte 2, Especiais ou Finais Duplos</span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="epIsSpecialInput" onchange="toggleSpecialTagField()" class="sr-only peer">
+                            <div class="w-12 h-7 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- Extra field shown when Special is checked -->
+                    <div id="specialTagContainer" class="hidden pt-2 border-t border-amber-500/20 space-y-2 animate-fade-in-up">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-300">
+                            Etiqueta do Especial
+                        </label>
+                        <input type="text" id="epSpecialLabelInput" placeholder="Ex: ESPECIAL • PARTE 1"
+                            class="w-full bg-slate-950 border border-amber-500/40 focus:border-amber-400 rounded-xl px-3.5 py-2 text-sm text-amber-200 placeholder-slate-600 outline-none">
+                        <!-- Quick Preset Pills -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <button type="button" onclick="setSpecialPreset('ESPECIAL • PARTE 1')" class="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 text-[11px] font-semibold border border-amber-500/30 transition">Parte 1</button>
+                            <button type="button" onclick="setSpecialPreset('ESPECIAL • PARTE 2')" class="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 text-[11px] font-semibold border border-amber-500/30 transition">Parte 2</button>
+                            <button type="button" onclick="setSpecialPreset('FINAL DE TEMPORADA')" class="px-2.5 py-1 rounded-lg bg-pink-500/15 hover:bg-pink-500/30 text-pink-300 text-[11px] font-semibold border border-pink-500/30 transition">Final de Temporada</button>
+                            <button type="button" onclick="setSpecialPreset('ESPECIAL DUPLO')" class="px-2.5 py-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 text-purple-300 text-[11px] font-semibold border border-purple-500/30 transition">Especial Duplo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Synopsis / Notes -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                        Sinopse / Notas RP (Opcional)
+                    </label>
+                    <textarea id="epSynopsisInput" rows="2" placeholder="Breve resumo do que acontece neste episódio..."
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition resize-none"></textarea>
+                </div>
+
+                <div class="flex items-center gap-3 pt-2">
+                    <button type="button" onclick="closeEpisodeModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-bold text-sm shadow-lg transition">
+                        Guardar Episódio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 3: CUSTOM CONFIRMATION MODAL (NO NATIVE CONFIRM) ==================== -->
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 modal-backdrop">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl modal-content text-center">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h3 id="confirmModalTitle" class="font-bold text-lg text-white mb-2">Tens a certeza?</h3>
+            <p id="confirmModalText" class="text-xs sm:text-sm text-slate-400 mb-6">Esta ação não pode ser desfeita.</p>
+            <div class="flex items-center gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition">
+                    Cancelar
+                </button>
+                <button id="confirmModalActionBtn" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg transition">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full px-4 pointer-events-none"></div>
+
+    <!-- ==================== APPLICATION LOGIC ==================== -->
     <script>
-        const STORAGE_KEY = 'rp_tv_series_schedules_channels_v3';
-        let schedules = [];
+        // Shared localStorage key across all pages of the RP Hub
+        const DB_STORAGE_KEY = 'series_rp_seasons_db_v1';
 
-        // Network Config
-        const networkConfig = {
-            'Gloob': {
-                name: 'Gloob',
-                badgeClass: 'bg-pink-950/80 text-pink-300 border-pink-800',
-                icon: 'fa-bolt'
-            },
-            'TFOU': {
-                name: 'TFOU',
-                badgeClass: 'bg-cyan-950/80 text-cyan-300 border-cyan-800',
-                icon: 'fa-tower-broadcast'
-            },
-            'Disney Channel': {
-                name: 'Disney Channel',
-                badgeClass: 'bg-purple-950/80 text-purple-300 border-purple-800',
-                icon: 'fa-wand-magic-sparkles'
-            }
-        };
+        let seasonsDB = [];
+        let filterOnlySpecials = false;
+        let pendingConfirmCallback = null;
 
+        // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
-            loadFromStorage();
-            renderSchedule();
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            loadDatabase();
+            renderSeasons();
         });
 
-        function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
-        }
-
-        function loadFromStorage() {
+        /* -------------------- STORAGE & BACKUP -------------------- */
+        function loadDatabase() {
             try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                if (stored) {
-                    schedules = JSON.parse(stored);
-                } else {
-                    // Starts 100% empty
-                    schedules = [];
-                    saveToStorage();
-                }
-            } catch (e) {
-                console.error("Erro ao carregar do LocalStorage", e);
-                schedules = [];
+                const raw = localStorage.getItem(DB_STORAGE_KEY);
+                seasonsDB = raw ? JSON.parse(raw) : [];
+            } catch (err) {
+                console.error('Erro ao ler localStorage:', err);
+                seasonsDB = [];
             }
         }
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
+        function saveDatabase() {
+            localStorage.setItem(DB_STORAGE_KEY, JSON.stringify(seasonsDB));
+        }
 
-            const seasonNumber = parseInt(document.getElementById('seasonNumber').value, 10);
-            const epNumber = parseInt(document.getElementById('epNumber').value, 10);
-            const epTitle = document.getElementById('epTitle').value.trim();
-            const network = document.getElementById('networkSelect').value;
-            const airDate = document.getElementById('airDate').value;
-            const airTime = document.getElementById('airTime').value;
-            const notes = document.getElementById('notes').value.trim();
-
-            if (!seasonNumber || !epNumber || !network || !airDate || !airTime) {
-                showToast('Por favor preenche todos os campos obrigatórios.', 'error');
+        function exportDatabase() {
+            if (seasonsDB.length === 0) {
+                showToast('A base de dados está vazia. Cria uma temporada primeiro!', 'warning');
                 return;
             }
-
-            // Check Validation Rules & Conflicts
-            const conflictResult = checkForConflicts(seasonNumber, epNumber, network, airDate, airTime);
-            if (conflictResult.hasConflict) {
-                showConflictAlert(conflictResult.message);
-                showToast('Conflito detetado! Verifica os avisos.', 'warning');
-                return;
-            }
-
-            const newEntry = {
-                id: Date.now().toString(),
-                seasonNumber,
-                epNumber,
-                epTitle: epTitle || `Episódio ${epNumber}`,
-                network,
-                airDate,
-                airTime,
-                notes
-            };
-
-            schedules.push(newEntry);
-            saveToStorage();
-            renderSchedule();
-
-            document.getElementById('scheduleForm').reset();
-            closeConflictAlert();
-
-            showToast(`T${seasonNumber} EP${epNumber} agendado na ${network}!`, 'success');
+            const blob = new Blob([JSON.stringify(seasonsDB, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `serie_rp_database_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showToast('Backup JSON exportado com sucesso!', 'success');
         }
 
-        function checkForConflicts(seasonNumber, epNumber, network, airDate, airTime) {
-            // Rule 1: Cannot schedule exact same Season + EP on exact same Network
-            const duplicateNetworkEntry = schedules.find(s => s.seasonNumber === seasonNumber && s.epNumber === epNumber && s.network === network);
-            if (duplicateNetworkEntry) {
-                return {
-                    hasConflict: true,
-                    message: `A T${seasonNumber} - EP${epNumber} já está agendada na ${network} para ${formatDate(duplicateNetworkEntry.airDate)} às ${duplicateNetworkEntry.airTime}. Não podes duplicar o agendamento na mesma emissora.`
-                };
-            }
-
-            // Rule 2: Warning if same Season + EP is scheduled on another network on the exact SAME date
-            const sameDateEntry = schedules.find(s => s.seasonNumber === seasonNumber && s.epNumber === epNumber && s.airDate === airDate);
-            if (sameDateEntry) {
-                return {
-                    hasConflict: true,
-                    message: `Atenção: A T${seasonNumber} - EP${epNumber} já está marcada para ser exibida no mesmo dia (${formatDate(airDate)}) na emissora ${sameDateEntry.network} (às ${sameDateEntry.airTime}h). Confirma os teus horários de RP!`
-                };
-            }
-
-            return { hasConflict: false };
-        }
-
-        function closeConflictAlert() {
-            document.getElementById('conflictAlertBox').classList.add('hidden');
-        }
-
-        function showConflictAlert(msg) {
-            const alertBox = document.getElementById('conflictAlertBox');
-            const alertMsg = document.getElementById('conflictAlertMessage');
-            alertMsg.textContent = msg;
-            alertBox.classList.remove('hidden');
-            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        // Calculate World Premiere per Season + Episode key
-        function calculateWorldPremieres() {
-            const premierMap = {}; 
-
-            schedules.forEach(entry => {
-                const key = `S${entry.seasonNumber}_EP${entry.epNumber}`;
-                const entryDateTime = new Date(`${entry.airDate}T${entry.airTime}`).getTime();
-
-                if (!premierMap[key]) {
-                    premierMap[key] = { id: entry.id, timestamp: entryDateTime, entry };
-                } else {
-                    if (entryDateTime < premierMap[key].timestamp) {
-                        premierMap[key] = { id: entry.id, timestamp: entryDateTime, entry };
-                    }
-                }
-            });
-
-            return premierMap;
-        }
-
-        function renderSchedule() {
-            const tableBody = document.getElementById('scheduleTableBody');
-            const emptyState = document.getElementById('emptyState');
-            const filterSeason = document.getElementById('filterSeason').value;
-            const filterNetwork = document.getElementById('filterNetwork').value;
-            const filterEpisode = document.getElementById('filterEpisode').value;
-
-            const premieres = calculateWorldPremieres();
-
-            // 1. Render Dedicated World Premiere Table
-            renderWorldPremiereTable(premieres);
-
-            // 2. Render Main Table
-            populateFilterDropdowns();
-
-            // Sort schedules by Season ASC, EP ASC, Date/Time ASC
-            let sortedSchedules = [...schedules].sort((a, b) => {
-                if (a.seasonNumber !== b.seasonNumber) return a.seasonNumber - b.seasonNumber;
-                if (a.epNumber !== b.epNumber) return a.epNumber - b.epNumber;
-                return new Date(`${a.airDate}T${a.airTime}`).getTime() - new Date(`${b.airDate}T${b.airTime}`).getTime();
-            });
-
-            // Apply Filters
-            let filtered = sortedSchedules.filter(item => {
-                const matchSeason = (filterSeason === 'ALL') || (item.seasonNumber.toString() === filterSeason);
-                const matchNetwork = (filterNetwork === 'ALL') || (item.network === filterNetwork);
-                const matchEpisode = (filterEpisode === 'ALL') || (item.epNumber.toString() === filterEpisode);
-                return matchSeason && matchNetwork && matchEpisode;
-            });
-
-            if (filtered.length === 0) {
-                tableBody.innerHTML = '';
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                
-                tableBody.innerHTML = filtered.map(item => {
-                    const key = `S${item.seasonNumber}_EP${item.epNumber}`;
-                    const isWorldPremiere = premieres[key] && premieres[key].id === item.id;
-                    const netInfo = networkConfig[item.network] || { name: item.network, badgeClass: 'bg-slate-800 text-slate-300', icon: 'fa-tv' };
-
-                    return `
-                        <tr class="hover:bg-slate-800/40 transition border-b border-slate-800/60">
-                            <!-- Temporada & Episódio -->
-                            <td class="py-3.5 px-4 font-semibold text-slate-100">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-800/70 rounded text-xs font-mono font-bold">
-                                        T${item.seasonNumber} EP${String(item.epNumber).padStart(2, '0')}
-                                    </span>
-                                    <span class="truncate max-w-[140px] sm:max-w-xs text-xs font-medium text-slate-300" title="${escapeHtml(item.epTitle)}">
-                                        ${escapeHtml(item.epTitle)}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <!-- Emissora -->
-                            <td class="py-3.5 px-4">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${netInfo.badgeClass}">
-                                    <i class="fa-solid ${netInfo.icon} text-[10px]"></i> ${netInfo.name}
-                                </span>
-                            </td>
-
-                            <!-- Data e Hora -->
-                            <td class="py-3.5 px-4 whitespace-nowrap">
-                                <div class="text-xs text-slate-200 font-medium">
-                                    <i class="fa-regular fa-calendar text-slate-400 mr-1"></i> ${formatDate(item.airDate)}
-                                </div>
-                                <div class="text-[11px] text-slate-400 mt-0.5">
-                                    <i class="fa-regular fa-clock text-slate-500 mr-1"></i> ${item.airTime}h
-                                </div>
-                            </td>
-
-                            <!-- Badge Estreia Mundial / Local -->
-                            <td class="py-3.5 px-4 whitespace-nowrap">
-                                ${isWorldPremiere ? `
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/40 shadow-sm">
-                                        <i class="fa-solid fa-globe text-amber-400"></i> ESTREIA MUNDIAL
-                                    </span>
-                                ` : `
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700">
-                                        <i class="fa-solid fa-rotate text-[10px]"></i> Lançamento Local
-                                    </span>
-                                `}
-                            </td>
-
-                            <!-- Notas -->
-                            <td class="py-3.5 px-4 text-xs text-slate-400 max-w-xs truncate" title="${escapeHtml(item.notes || '-')}">
-                                ${escapeHtml(item.notes || '-')}
-                            </td>
-
-                            <!-- Ações -->
-                            <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                <button onclick="deleteSchedule('${item.id}')" title="Eliminar agendamento" class="p-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 rounded-lg border border-rose-800/40 transition">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            updateStats(premieres);
-        }
-
-        // Render the dedicated World Premiere Table ordered strictly by Episode (T1 EP1, T1 EP2, T2 EP1...)
-        function renderWorldPremiereTable(premieres) {
-            const wpBody = document.getElementById('worldPremiereTableBody');
-            const wpEmptyState = document.getElementById('worldPremiereEmptyState');
-            const wpTotalBadge = document.getElementById('worldPremieresTotalBadge');
-
-            const premiereList = Object.values(premieres).map(p => p.entry);
-
-            // Sort strictly by Season Number ASC then Episode Number ASC
-            premiereList.sort((a, b) => {
-                if (a.seasonNumber !== b.seasonNumber) return a.seasonNumber - b.seasonNumber;
-                return a.epNumber - b.epNumber;
-            });
-
-            wpTotalBadge.textContent = `${premiereList.length} Estreias Registadas`;
-
-            if (premiereList.length === 0) {
-                wpBody.innerHTML = '';
-                wpEmptyState.classList.remove('hidden');
-            } else {
-                wpEmptyState.classList.add('hidden');
-                wpBody.innerHTML = premiereList.map(item => {
-                    const netInfo = networkConfig[item.network] || { name: item.network, badgeClass: 'bg-slate-800 text-slate-300', icon: 'fa-tv' };
-
-                    return `
-                        <tr class="hover:bg-amber-500/5 transition border-b border-amber-500/10">
-                            <!-- Ordem T & EP -->
-                            <td class="py-3.5 px-4 font-semibold">
-                                <span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-mono font-bold">
-                                    T${item.seasonNumber} EP${String(item.epNumber).padStart(2, '0')}
-                                </span>
-                            </td>
-
-                            <!-- Nome do Episódio -->
-                            <td class="py-3.5 px-4 text-xs font-bold text-slate-100">
-                                ${escapeHtml(item.epTitle)}
-                            </td>
-
-                            <!-- Emissora Vencedora -->
-                            <td class="py-3.5 px-4">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${netInfo.badgeClass}">
-                                    <i class="fa-solid ${netInfo.icon} text-[10px]"></i> ${netInfo.name}
-                                </span>
-                            </td>
-
-                            <!-- Data & Hora Mundial -->
-                            <td class="py-3.5 px-4 whitespace-nowrap">
-                                <div class="text-xs text-amber-200 font-semibold">
-                                    <i class="fa-regular fa-calendar-check mr-1 text-amber-400"></i> ${formatDate(item.airDate)} às ${item.airTime}h
-                                </div>
-                            </td>
-
-                            <!-- Notas / Idioma -->
-                            <td class="py-3.5 px-4 text-xs text-slate-400 truncate max-w-xs" title="${escapeHtml(item.notes || '-')}">
-                                ${escapeHtml(item.notes || '-')}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-        }
-
-        function updateStats(premieres) {
-            const counts = {
-                'Gloob': { total: 0, premieres: 0 },
-                'TFOU': { total: 0, premieres: 0 },
-                'Disney Channel': { total: 0, premieres: 0 }
-            };
-
-            schedules.forEach(s => {
-                if (counts[s.network]) {
-                    counts[s.network].total++;
-                    const key = `S${s.seasonNumber}_EP${s.epNumber}`;
-                    if (premieres[key] && premieres[key].id === s.id) {
-                        counts[s.network].premieres++;
-                    }
-                }
-            });
-
-            // Gloob
-            document.getElementById('badgeGloobCount').textContent = `${counts['Gloob'].total} agendados`;
-            document.getElementById('gloobPremierCount').textContent = counts['Gloob'].premieres;
-
-            // TFOU
-            document.getElementById('badgeTfouCount').textContent = `${counts['TFOU'].total} agendados`;
-            document.getElementById('tfouPremierCount').textContent = counts['TFOU'].premieres;
-
-            // Disney Channel
-            document.getElementById('badgeDisneyCount').textContent = `${counts['Disney Channel'].total} agendados`;
-            document.getElementById('disneyPremierCount').textContent = counts['Disney Channel'].premieres;
-        }
-
-        function populateFilterDropdowns() {
-            // Populate Seasons
-            const filterSeasonSelect = document.getElementById('filterSeason');
-            const currentSeason = filterSeasonSelect.value;
-            const uniqueSeasons = [...new Set(schedules.map(s => s.seasonNumber))].sort((a, b) => a - b);
-            
-            let seasonHtml = `<option value="ALL">Todas as Temporadas</option>`;
-            uniqueSeasons.forEach(s => {
-                seasonHtml += `<option value="${s}" ${currentSeason == s ? 'selected' : ''}>Temporada ${s}</option>`;
-            });
-            filterSeasonSelect.innerHTML = seasonHtml;
-
-            // Populate Episodes
-            const filterEpSelect = document.getElementById('filterEpisode');
-            const currentEp = filterEpSelect.value;
-            const uniqueEps = [...new Set(schedules.map(s => s.epNumber))].sort((a, b) => a - b);
-
-            let epHtml = `<option value="ALL">Todos os Episódios</option>`;
-            uniqueEps.forEach(ep => {
-                epHtml += `<option value="${ep}" ${currentEp == ep ? 'selected' : ''}>Episódio ${ep}</option>`;
-            });
-            filterEpSelect.innerHTML = epHtml;
-        }
-
-        function deleteSchedule(id) {
-            schedules = schedules.filter(s => s.id !== id);
-            saveToStorage();
-            renderSchedule();
-            showToast('Agendamento removido com sucesso.', 'info');
-        }
-
-        function confirmClearData() {
-            if (confirm('Tens a certeza de que queres eliminar TODOS os agendamentos das 3 emissoras?')) {
-                schedules = [];
-                saveToStorage();
-                renderSchedule();
-                closeConflictAlert();
-                showToast('Todos os dados foram eliminados.', 'info');
-            }
-        }
-
-        function exportData() {
-            if (schedules.length === 0) {
-                showToast('Não existem agendamentos para exportar.', 'warning');
-                return;
-            }
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(schedules, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `agendamentos_gloob_tfou_disney_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('Ficheiro de dados exportado!', 'success');
-        }
-
-        function importData(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function (e) {
+        function importDatabase(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
                 try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        schedules = imported;
-                        saveToStorage();
-                        renderSchedule();
-                        showToast('Dados importados com sucesso!', 'success');
+                    const parsed = JSON.parse(e.target.result);
+                    if (Array.isArray(parsed)) {
+                        seasonsDB = parsed;
+                        saveDatabase();
+                        renderSeasons();
+                        showToast('Base de dados restaurada com sucesso!', 'success');
                     } else {
-                        showToast('Ficheiro JSON inválido.', 'error');
+                        showToast('Formato de ficheiro inválido.', 'error');
                     }
                 } catch (err) {
-                    showToast('Erro ao ler o ficheiro JSON.', 'error');
+                    showToast('Erro ao processar ficheiro JSON.', 'error');
                 }
+                event.target.value = '';
             };
-            if (event.target.files[0]) {
-                fileReader.readAsText(event.target.files[0]);
+            reader.readAsText(file);
+        }
+
+        /* -------------------- MOBILE NAVBAR -------------------- */
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        /* -------------------- SEASON CRUD & STATUS -------------------- */
+        function openSeasonModal(seasonId = null) {
+            const modal = document.getElementById('seasonModal');
+            const title = document.getElementById('seasonModalTitle');
+            const editIdInput = document.getElementById('editSeasonId');
+            const numInput = document.getElementById('seasonNumberInput');
+            const subInput = document.getElementById('seasonTitleInput');
+            const premInput = document.getElementById('seasonPremieredInput');
+
+            if (seasonId) {
+                const season = seasonsDB.find(s => s.id === seasonId);
+                if (!season) return;
+                title.textContent = `Editar Temporada ${season.number}`;
+                editIdInput.value = season.id;
+                numInput.value = season.number;
+                subInput.value = season.subtitle || '';
+                premInput.checked = !!season.isPremiered;
+            } else {
+                title.textContent = 'Criar Nova Temporada';
+                editIdInput.value = '';
+                // Suggest next season number automatically
+                const maxSeason = seasonsDB.reduce((max, s) => Math.max(max, s.number), 0);
+                numInput.value = maxSeason + 1;
+                subInput.value = '';
+                premInput.checked = false;
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSeasonModal() {
+            const modal = document.getElementById('seasonModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleSeasonSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editSeasonId').value;
+            const number = parseInt(document.getElementById('seasonNumberInput').value, 10);
+            const subtitle = document.getElementById('seasonTitleInput').value.trim();
+            const isPremiered = document.getElementById('seasonPremieredInput').checked;
+
+            if (!number || number < 1) {
+                showToast('Insere um número de temporada válido.', 'error');
+                return;
+            }
+
+            // Check duplicate season number
+            const duplicate = seasonsDB.find(s => s.number === number && s.id !== editId);
+            if (duplicate) {
+                showToast(`A Temporada ${number} já existe na base de dados!`, 'warning');
+                return;
+            }
+
+            if (editId) {
+                const index = seasonsDB.findIndex(s => s.id === editId);
+                if (index !== -1) {
+                    seasonsDB[index].number = number;
+                    seasonsDB[index].subtitle = subtitle;
+                    seasonsDB[index].isPremiered = isPremiered;
+                    showToast(`Temporada ${number} atualizada!`, 'success');
+                }
+            } else {
+                seasonsDB.push({
+                    id: 'season_' + Date.now(),
+                    number,
+                    subtitle,
+                    isPremiered,
+                    episodes: []
+                });
+                showToast(`Temporada ${number} criada com sucesso!`, 'success');
+            }
+
+            // Keep seasons sorted by number
+            seasonsDB.sort((a, b) => a.number - b.number);
+            saveDatabase();
+            renderSeasons();
+            closeSeasonModal();
+        }
+
+        function toggleSeasonPremiered(seasonId) {
+            const season = seasonsDB.find(s => s.id === seasonId);
+            if (!season) return;
+            season.isPremiered = !season.isPremiered;
+            saveDatabase();
+            renderSeasons();
+            if (season.isPremiered) {
+                showToast(`Temporada ${season.number} marcada como ESTREADA!`, 'success');
+            } else {
+                showToast(`Temporada ${season.number} alterada para Não Estreada.`, 'info');
             }
         }
 
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const parts = dateStr.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-            return dateStr;
+        function confirmDeleteSeason(seasonId) {
+            const season = seasonsDB.find(s => s.id === seasonId);
+            if (!season) return;
+            openConfirmModal(
+                `Eliminar Temporada ${season.number}?`,
+                `Todos os ${season.episodes.length} episódios desta temporada serão apagados permanentemente.`,
+                () => {
+                    seasonsDB = seasonsDB.filter(s => s.id !== seasonId);
+                    saveDatabase();
+                    renderSeasons();
+                    showToast(`Temporada ${season.number} eliminada.`, 'info');
+                }
+            );
         }
 
+        /* -------------------- EPISODE CRUD & SPECIALS -------------------- */
+        function openEpisodeModal(preselectedSeasonId = null, editEpisodeId = null) {
+            if (seasonsDB.length === 0) {
+                showToast('Cria primeiro uma Temporada antes de adicionar episódios!', 'warning');
+                openSeasonModal();
+                return;
+            }
+
+            const modal = document.getElementById('episodeModal');
+            const modalTitle = document.getElementById('episodeModalTitle');
+            const seasonSelect = document.getElementById('epSeasonSelect');
+            const editEpInput = document.getElementById('editEpisodeId');
+            const epNumInput = document.getElementById('epNumberInput');
+            const epTitleInput = document.getElementById('epTitleInput');
+            const isSpecialInput = document.getElementById('epIsSpecialInput');
+            const specialLabelInput = document.getElementById('epSpecialLabelInput');
+            const synopsisInput = document.getElementById('epSynopsisInput');
+
+            // Populate season dropdown
+            seasonSelect.innerHTML = seasonsDB.map(s => 
+                `<option value="${s.id}">Temporada ${s.number}${s.subtitle ? ' — ' + escapeHtml(s.subtitle) : ''}</option>`
+            ).join('');
+
+            if (preselectedSeasonId) {
+                seasonSelect.value = preselectedSeasonId;
+            }
+
+            if (editEpisodeId && preselectedSeasonId) {
+                const season = seasonsDB.find(s => s.id === preselectedSeasonId);
+                const ep = season ? season.episodes.find(e => e.id === editEpisodeId) : null;
+                if (ep) {
+                    modalTitle.textContent = `Editar Episódio ${String(ep.number).padStart(2, '0')}`;
+                    editEpInput.value = ep.id;
+                    epNumInput.value = ep.number;
+                    epTitleInput.value = ep.title;
+                    isSpecialInput.checked = !!ep.isSpecial;
+                    specialLabelInput.value = ep.specialLabel || '';
+                    synopsisInput.value = ep.synopsis || '';
+                }
+            } else {
+                modalTitle.textContent = 'Adicionar Novo Episódio';
+                editEpInput.value = '';
+                const targetSeason = seasonsDB.find(s => s.id === seasonSelect.value) || seasonsDB[0];
+                const maxEp = targetSeason.episodes.reduce((max, ep) => Math.max(max, ep.number), 0);
+                epNumInput.value = maxEp + 1;
+                epTitleInput.value = '';
+                isSpecialInput.checked = false;
+                specialLabelInput.value = 'ESPECIAL • PARTE 1';
+                synopsisInput.value = '';
+            }
+
+            toggleSpecialTagField();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeEpisodeModal() {
+            const modal = document.getElementById('episodeModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function toggleSpecialTagField() {
+            const isChecked = document.getElementById('epIsSpecialInput').checked;
+            const container = document.getElementById('specialTagContainer');
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function setSpecialPreset(label) {
+            document.getElementById('epSpecialLabelInput').value = label;
+        }
+
+        function handleEpisodeSubmit(e) {
+            e.preventDefault();
+            const targetSeasonId = document.getElementById('epSeasonSelect').value;
+            const editEpisodeId = document.getElementById('editEpisodeId').value;
+            const number = parseInt(document.getElementById('epNumberInput').value, 10);
+            const title = document.getElementById('epTitleInput').value.trim();
+            const isSpecial = document.getElementById('epIsSpecialInput').checked;
+            const specialLabel = isSpecial ? (document.getElementById('epSpecialLabelInput').value.trim() || 'ESPECIAL') : '';
+            const synopsis = document.getElementById('epSynopsisInput').value.trim();
+
+            const season = seasonsDB.find(s => s.id === targetSeasonId);
+            if (!season) return;
+
+            if (editEpisodeId) {
+                // Remove from old season if season changed
+                seasonsDB.forEach(s => {
+                    s.episodes = s.episodes.filter(ep => ep.id !== editEpisodeId);
+                });
+                season.episodes.push({
+                    id: editEpisodeId,
+                    number,
+                    title,
+                    isSpecial,
+                    specialLabel,
+                    synopsis
+                });
+                showToast(`Episódio ${String(number).padStart(2, '0')} atualizado!`, 'success');
+            } else {
+                season.episodes.push({
+                    id: 'ep_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                    number,
+                    title,
+                    isSpecial,
+                    specialLabel,
+                    synopsis
+                });
+                showToast(`EP${String(number).padStart(2, '0')} adicionado à Temporada ${season.number}!`, 'success');
+            }
+
+            // Sort episodes numerically inside the season
+            season.episodes.sort((a, b) => a.number - b.number);
+            saveDatabase();
+            renderSeasons();
+            closeEpisodeModal();
+        }
+
+        function toggleEpisodeSpecialQuick(seasonId, episodeId) {
+            const season = seasonsDB.find(s => s.id === seasonId);
+            if (!season) return;
+            const ep = season.episodes.find(e => e.id === episodeId);
+            if (!ep) return;
+
+            ep.isSpecial = !ep.isSpecial;
+            if (ep.isSpecial && !ep.specialLabel) {
+                ep.specialLabel = 'ESPECIAL';
+            }
+            saveDatabase();
+            renderSeasons();
+            showToast(ep.isSpecial ? `EP${String(ep.number).padStart(2, '0')} destacado como Especial!` : `Destaque especial removido.`, 'info');
+        }
+
+        function confirmDeleteEpisode(seasonId, episodeId) {
+            const season = seasonsDB.find(s => s.id === seasonId);
+            if (!season) return;
+            const ep = season.episodes.find(e => e.id === episodeId);
+            if (!ep) return;
+
+            openConfirmModal(
+                `Remover EP${String(ep.number).padStart(2, '0')}?`,
+                `Queres apagar "${ep.title}" da Temporada ${season.number}?`,
+                () => {
+                    season.episodes = season.episodes.filter(e => e.id !== episodeId);
+                    saveDatabase();
+                    renderSeasons();
+                    showToast('Episódio removido.', 'info');
+                }
+            );
+        }
+
+        /* -------------------- FILTERS & RESET -------------------- */
+        function toggleSpecialsFilter() {
+            filterOnlySpecials = !filterOnlySpecials;
+            const btn = document.getElementById('filterSpecialsBtn');
+            if (filterOnlySpecials) {
+                btn.classList.remove('bg-slate-950', 'text-slate-300', 'border-slate-800');
+                btn.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500/50');
+            } else {
+                btn.classList.add('bg-slate-950', 'text-slate-300', 'border-slate-800');
+                btn.classList.remove('bg-amber-500/20', 'text-amber-300', 'border-amber-500/50');
+            }
+            renderSeasons();
+        }
+
+        function openResetConfirmModal() {
+            openConfirmModal(
+                'Limpar toda a Base de Dados?',
+                'Isto vai apagar todas as temporadas e episódios guardados no navegador.',
+                () => {
+                    seasonsDB = [];
+                    saveDatabase();
+                    renderSeasons();
+                    showToast('Base de dados limpa com sucesso.', 'info');
+                }
+            );
+        }
+
+        /* -------------------- RENDER ENGINE -------------------- */
+        function renderSeasons() {
+            const container = document.getElementById('seasonsContainer');
+            const emptyState = document.getElementById('emptyDatabaseState');
+            const filterToolbar = document.getElementById('filterToolbar');
+            const searchQuery = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+            updateGlobalStats();
+
+            if (seasonsDB.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                filterToolbar.classList.add('hidden');
+                filterToolbar.classList.remove('flex');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            filterToolbar.classList.remove('hidden');
+            filterToolbar.classList.add('flex');
+
+            container.innerHTML = seasonsDB.map((season, idx) => {
+                // Filter episodes inside this season
+                const visibleEpisodes = season.episodes.filter(ep => {
+                    const matchesSpecial = !filterOnlySpecials || ep.isSpecial;
+                    const matchesSearch = !searchQuery || 
+                        ep.title.toLowerCase().includes(searchQuery) ||
+                        String(ep.number).includes(searchQuery) ||
+                        (ep.specialLabel && ep.specialLabel.toLowerCase().includes(searchQuery)) ||
+                        (ep.synopsis && ep.synopsis.toLowerCase().includes(searchQuery));
+                    return matchesSpecial && matchesSearch;
+                });
+
+                const specialCount = season.episodes.filter(e => e.isSpecial).length;
+
+                return `
+                    <article style="animation-delay: ${idx * 60}ms" class="animate-fade-in-up bg-slate-900/90 border ${season.isPremiered ? 'season-premiered-glow' : 'border-slate-800'} rounded-3xl overflow-hidden shadow-2xl transition-all">
+                        
+                        <!-- SEASON TABLE TOP HEADER -->
+                        <div class="p-5 sm:p-6 bg-gradient-to-r ${season.isPremiered ? 'from-emerald-950/30 via-slate-900 to-slate-900' : 'from-slate-900 via-[#12172b] to-slate-900'} border-b border-slate-800/90 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            
+                            <!-- Left: Season Title & Counters -->
+                            <div class="space-y-2">
+                                <div class="flex flex-wrap items-center gap-2.5">
+                                    <span class="px-3 py-1 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-display font-extrabold text-sm">
+                                        TEMPORADA ${season.number}
+                                    </span>
+                                    ${season.subtitle ? `<h2 class="font-display font-bold text-lg sm:text-xl text-white">${escapeHtml(season.subtitle)}</h2>` : ''}
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="fa-solid fa-list-ol text-cyan-400"></i>
+                                        <strong>${season.episodes.length}</strong> ${season.episodes.length === 1 ? 'episódio' : 'episódios'}
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1.5 text-amber-300/90">
+                                        <i class="fa-solid fa-star text-amber-400"></i>
+                                        <strong>${specialCount}</strong> ${specialCount === 1 ? 'especial' : 'especiais'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Right: "TEMPORADA ESTREADA" Toggle Button + Actions -->
+                            <div class="flex flex-wrap items-center gap-2.5">
+                                
+                                <!-- Interactive Premiered Status Pill Button -->
+                                <button onclick="toggleSeasonPremiered('${season.id}')" title="Clica para alternar o estado de estreia desta temporada"
+                                    class="px-4 py-2.5 rounded-xl text-xs font-extrabold tracking-wide uppercase flex items-center gap-2 transition-all cursor-pointer border ${
+                                        season.isPremiered 
+                                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/50 shadow-lg shadow-emerald-500/10 hover:bg-emerald-500/25' 
+                                        : 'bg-slate-800/90 text-slate-400 border-slate-700 hover:text-slate-200 hover:border-slate-600'
+                                    }">
+                                    <i class="fa-solid ${season.isPremiered ? 'fa-circle-check text-emerald-400 animate-pulse' : 'fa-clock text-slate-500'}"></i>
+                                    <span>${season.isPremiered ? 'Temporada Estreada' : 'Não Estreada'}</span>
+                                </button>
+
+                                <!-- Quick Add Episode to this Season -->
+                                <button onclick="openEpisodeModal('${season.id}')" class="px-3.5 py-2.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Episódio</span>
+                                </button>
+
+                                <!-- Edit Season -->
+                                <button onclick="openSeasonModal('${season.id}')" title="Editar Temporada" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs transition cursor-pointer">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <!-- Delete Season -->
+                                <button onclick="confirmDeleteSeason('${season.id}')" title="Apagar Temporada" class="p-2.5 rounded-xl bg-rose-950/50 hover:bg-rose-900/70 text-rose-400 border border-rose-800/40 text-xs transition cursor-pointer">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- EPISODES TABLE -->
+                        ${visibleEpisodes.length === 0 ? `
+                            <div class="p-8 text-center">
+                                <p class="text-xs text-slate-500 mb-3">
+                                    ${season.episodes.length === 0 
+                                        ? 'Esta temporada ainda não tem episódios registados.' 
+                                        : 'Nenhum episódio corresponde ao filtro atual.'}
+                                </p>
+                                ${season.episodes.length === 0 ? `
+                                    <button onclick="openEpisodeModal('${season.id}')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold inline-flex items-center gap-2 transition">
+                                        <i class="fa-solid fa-plus"></i> Adicionar 1º Episódio
+                                    </button>
+                                ` : ''}
+                            </div>
+                        ` : `
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-950/70 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800/80">
+                                            <th class="py-3.5 px-4 sm:px-6 w-24">Código</th>
+                                            <th class="py-3.5 px-4">Título do Episódio</th>
+                                            <th class="py-3.5 px-4 hidden md:table-cell">Sinopse / Notas</th>
+                                            <th class="py-3.5 px-4 text-right sm:px-6">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                                        ${visibleEpisodes.map(ep => {
+                                            const epCode = `T${season.number} EP${String(ep.number).padStart(2, '0')}`;
+                                            return `
+                                                <tr class="${ep.isSpecial ? 'special-episode-row' : 'hover:bg-slate-800/35'} transition-colors group">
+                                                    <!-- Episode Code -->
+                                                    <td class="py-4 px-4 sm:px-6 whitespace-nowrap align-top sm:align-middle">
+                                                        <span class="inline-block px-2.5 py-1 rounded-lg font-mono text-xs font-extrabold ${
+                                                            ep.isSpecial 
+                                                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' 
+                                                            : 'bg-slate-800 text-slate-300 border border-slate-700'
+                                                        }">
+                                                            ${epCode}
+                                                        </span>
+                                                    </td>
+
+                                                    <!-- Title & Special Badge -->
+                                                    <td class="py-4 px-4 align-top sm:align-middle">
+                                                        <div class="flex flex-wrap items-center gap-2">
+                                                            <span class="${ep.isSpecial ? 'font-extrabold text-amber-100 text-sm sm:text-base' : 'font-semibold text-slate-100 text-sm'}">
+                                                                ${escapeHtml(ep.title)}
+                                                            </span>
+                                                            ${ep.isSpecial ? `
+                                                                <span class="badge-shimmer inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-md">
+                                                                    <i class="fa-solid fa-star text-[9px]"></i>
+                                                                    ${escapeHtml(ep.specialLabel || 'ESPECIAL')}
+                                                                </span>
+                                                            ` : ''}
+                                                        </div>
+                                                        <!-- Mobile Synopsis Preview -->
+                                                        ${ep.synopsis ? `<p class="md:hidden text-xs text-slate-400 mt-1 line-clamp-2">${escapeHtml(ep.synopsis)}</p>` : ''}
+                                                    </td>
+
+                                                    <!-- Desktop Synopsis -->
+                                                    <td class="py-4 px-4 hidden md:table-cell text-xs text-slate-400 max-w-md">
+                                                        <p class="line-clamp-2">${ep.synopsis ? escapeHtml(ep.synopsis) : '<span class="text-slate-600 italic">Sem notas</span>'}</p>
+                                                    </td>
+
+                                                    <!-- Row Actions -->
+                                                    <td class="py-4 px-4 sm:px-6 text-right whitespace-nowrap align-top sm:align-middle">
+                                                        <div class="inline-flex items-center gap-1.5">
+                                                            <!-- Quick Star Toggle -->
+                                                            <button onclick="toggleEpisodeSpecialQuick('${season.id}', '${ep.id}')" title="${ep.isSpecial ? 'Remover destaque Especial' : 'Marcar como Especial (Parte 1/2)'}"
+                                                                class="p-2 rounded-lg border text-xs transition cursor-pointer ${
+                                                                    ep.isSpecial 
+                                                                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30' 
+                                                                    : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-amber-300'
+                                                                }">
+                                                                <i class="fa-solid fa-star"></i>
+                                                            </button>
+
+                                                            <!-- Edit Episode -->
+                                                            <button onclick="openEpisodeModal('${season.id}', '${ep.id}')" title="Editar Episódio"
+                                                                class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs transition cursor-pointer">
+                                                                <i class="fa-solid fa-pen"></i>
+                                                            </button>
+
+                                                            <!-- Delete Episode -->
+                                                            <button onclick="confirmDeleteEpisode('${season.id}', '${ep.id}')" title="Eliminar Episódio"
+                                                                class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/70 text-rose-400 border border-rose-800/40 text-xs transition cursor-pointer">
+                                                                <i class="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `}
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function updateGlobalStats() {
+            const totalSeasons = seasonsDB.length;
+            const premieredSeasons = seasonsDB.filter(s => s.isPremiered).length;
+            let totalEpisodes = 0;
+            let specialEpisodes = 0;
+
+            seasonsDB.forEach(s => {
+                totalEpisodes += s.episodes.length;
+                specialEpisodes += s.episodes.filter(e => e.isSpecial).length;
+            });
+
+            document.getElementById('statTotalSeasons').textContent = totalSeasons;
+            document.getElementById('statPremieredSeasons').textContent = premieredSeasons;
+            document.getElementById('statTotalEpisodes').textContent = totalEpisodes;
+            document.getElementById('statSpecialEpisodes').textContent = specialEpisodes;
+        }
+
+        /* -------------------- CONFIRMATION MODAL -------------------- */
+        function openConfirmModal(title, text, onConfirm) {
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalText').textContent = text;
+            pendingConfirmCallback = onConfirm;
+
+            const actionBtn = document.getElementById('confirmModalActionBtn');
+            actionBtn.onclick = () => {
+                if (pendingConfirmCallback) pendingConfirmCallback();
+                closeConfirmModal();
+            };
+
+            const modal = document.getElementById('confirmModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            pendingConfirmCallback = null;
+        }
+
+        /* -------------------- UTILS & TOASTS -------------------- */
         function escapeHtml(str) {
-            return String(str || '').replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    .replace(/"/g, '&quot;')
-                                    .replace(/'/g, '&#039;');
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         function showToast(message, type = 'info') {
-            const container = document.getElementById('notificationContainer');
+            const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
 
-            const bgColors = {
-                success: 'bg-emerald-900/90 border-emerald-500 text-emerald-200',
-                error: 'bg-rose-900/90 border-rose-500 text-rose-200',
-                warning: 'bg-amber-900/90 border-amber-500 text-amber-200',
-                info: 'bg-indigo-900/90 border-indigo-500 text-indigo-200'
+            const styles = {
+                success: 'bg-emerald-950/95 border-emerald-500/60 text-emerald-200',
+                error: 'bg-rose-950/95 border-rose-500/60 text-rose-200',
+                warning: 'bg-amber-950/95 border-amber-500/60 text-amber-200',
+                info: 'bg-indigo-950/95 border-indigo-500/60 text-indigo-200'
             };
 
             const icons = {
@@ -824,21 +1139,21 @@
                 info: 'fa-circle-info text-indigo-400'
             };
 
-            toast.className = `flex items-center gap-3 p-3.5 rounded-xl border shadow-xl backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 text-xs sm:text-sm font-medium ${bgColors[type] || bgColors.info}`;
+            toast.className = `pointer-events-auto flex items-center gap-3 p-3.5 rounded-2xl border shadow-2xl backdrop-blur-md text-xs sm:text-sm font-semibold transition-all duration-300 transform translate-y-4 opacity-0 ${styles[type] || styles.info}`;
             toast.innerHTML = `
-                <i class="fa-solid ${icons[type] || icons.info} text-lg"></i>
+                <i class="fa-solid ${icons[type] || icons.info} text-base"></i>
                 <span class="flex-1">${message}</span>
-                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
             `;
 
             container.appendChild(toast);
-            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
+                toast.classList.add('opacity-0', 'translate-y-4');
                 setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            }, 3500);
         }
     </script>
 </body>
