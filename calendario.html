@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendário de Estreias — Série RP Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base: #07090f;
+      --bg-elevated: #0d111c;
+      --bg-card: rgba(16, 22, 36, 0.82);
+      --bg-card-hover: rgba(23, 31, 50, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --accent-primary: #8b5cf6;
+      --accent-secondary: #ec4899;
+      --gold: #fbbf24;
+      --gold-bg: rgba(251, 191, 36, 0.14);
+      --gold-border: rgba(251, 191, 36, 0.42);
+
+      --gloob: #10b981;
+      --gloob-bg: rgba(16, 185, 129, 0.16);
+      --gloob-border: rgba(16, 185, 129, 0.45);
+
+      --tfou: #ef4444;
+      --tfou-bg: rgba(239, 68, 68, 0.16);
+      --tfou-border: rgba(239, 68, 68, 0.45);
+
+      --disney: #3b82f6;
+      --disney-bg: rgba(59, 130, 246, 0.16);
+      --disney-border: rgba(59, 130, 246, 0.45);
+
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.45);
+      --transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(16, 185, 129, 0.08), transparent 40%),
+        radial-gradient(circle at 88% 15%, rgba(59, 130, 246, 0.09), transparent 42%),
+        radial-gradient(circle at 50% 88%, rgba(239, 68, 68, 0.07), transparent 45%),
+        var(--bg-base);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: 0.35;
+      animation: floatOrb 16s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 340px;
+      height: 340px;
+      background: rgba(139, 92, 246, 0.25);
+      top: -80px;
+      left: -60px;
+    }
+
+    .orb-2 {
+      width: 380px;
+      height: 380px;
+      background: rgba(59, 130, 246, 0.22);
+      bottom: -100px;
+      right: -80px;
+      animation-delay: -6s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(28px, -22px) scale(1.08); }
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(7, 9, 15, 0.82);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: grid;
+      place-items: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 9px 15px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-subtle);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28), rgba(236, 72, 153, 0.22));
+      border-color: rgba(167, 139, 250, 0.45);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.2);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px 22px 70px;
+      animation: pageFadeIn 0.5s ease-out;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .hero-bar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.85rem, 3.6vw, 2.75rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 15%, #cbd5e1 65%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 6px;
+      max-width: 680px;
+    }
+
+    /* Legenda das emissoras */
+    .legend-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      justify-content: space-between;
+    }
+
+    .legend-items {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+    }
+
+    .legend-chip:hover {
+      transform: translateY(-1px);
+      color: var(--text-main);
+    }
+
+    .legend-chip.active-filter {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.11);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+
+    .dot-gloob {
+      background: var(--gloob);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.85);
+    }
+
+    .dot-tfou {
+      background: var(--tfou);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.85);
+    }
+
+    .dot-disney {
+      background: var(--disney);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.85);
+    }
+
+    .dot-all {
+      background: linear-gradient(135deg, var(--gloob), var(--tfou), var(--disney));
+    }
+
+    .legend-world {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-border);
+    }
+
+    /* Controlos do calendário */
+    .cal-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .month-title-wrap {
+      min-width: 225px;
+    }
+
+    .month-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-transform: capitalize;
+    }
+
+    .month-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      padding: 9px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.11);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      justify-content: center;
+      font-size: 1.1rem;
+      border-radius: 50%;
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(139, 92, 246, 0.32);
+    }
+
+    .btn-accent:hover {
+      filter: brightness(1.08);
+      border-color: transparent;
+    }
+
+    .quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Layout Principal: Calendário + Detalhe do Dia */
+    .cal-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .cal-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Grade do Calendário */
+    .calendar-shell {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .weekdays-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .weekday-cell {
+      text-align: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 6px 0;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      animation: gridSwap 0.28s ease-out;
+    }
+
+    @keyframes gridSwap {
+      from { opacity: 0.35; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .day-cell {
+      min-height: 104px;
+      border-radius: var(--radius-md);
+      background: rgba(11, 15, 25, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      text-align: left;
+    }
+
+    @media (max-width: 680px) {
+      .calendar-shell {
+        padding: 10px;
+        border-radius: var(--radius-lg);
+      }
+      .days-grid, .weekdays-row {
+        gap: 5px;
+      }
+      .day-cell {
+        min-height: 74px;
+        padding: 6px;
+        border-radius: 10px;
+      }
+    }
+
+    .day-cell:hover {
+      border-color: rgba(255, 255, 255, 0.24);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .day-cell.outside-month {
+      opacity: 0.34;
+      background: rgba(8, 11, 19, 0.38);
+    }
+
+    .day-cell.is-today {
+      border-color: rgba(167, 139, 250, 0.65);
+      box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.35);
+    }
+
+    .day-cell.is-selected {
+      border-color: #ffffff;
+      background: rgba(139, 92, 246, 0.16);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.45);
+    }
+
+    /* Destaque visual quando o dia tem lançamentos */
+    .day-cell.has-events.only-gloob {
+      border-color: var(--gloob-border);
+      background: linear-gradient(160deg, rgba(16, 185, 129, 0.13), rgba(11, 15, 25, 0.85));
+    }
+
+    .day-cell.has-events.only-tfou {
+      border-color: var(--tfou-border);
+      background: linear-gradient(160deg, rgba(239, 68, 68, 0.13), rgba(11, 15, 25, 0.85));
+    }
+
+    .day-cell.has-events.only-disney {
+      border-color: var(--disney-border);
+      background: linear-gradient(160deg, rgba(59, 130, 246, 0.13), rgba(11, 15, 25, 0.85));
+    }
+
+    .day-cell.has-events.multi-network {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.11), rgba(239, 68, 68, 0.1), rgba(59, 130, 246, 0.12));
+    }
+
+    .day-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .day-number {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      line-height: 1;
+      padding: 4px 6px;
+      border-radius: 7px;
+    }
+
+    .is-today .day-number {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #fff;
+    }
+
+    .world-crown {
+      font-size: 0.78rem;
+      line-height: 1;
+      animation: pulseCrown 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulseCrown {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+
+    /* Bolinhas de estreia do dia */
+    .dots-cluster {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .ball-badge {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      animation: popBall 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popBall {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .day-cell:hover .ball-badge {
+      transform: scale(1.15);
+    }
+
+    .ball-gloob {
+      background: radial-gradient(circle at 32% 30%, #6ee7b7, var(--gloob) 65%, #047857);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.85);
+    }
+
+    .ball-tfou {
+      background: radial-gradient(circle at 32% 30%, #fca5a5, var(--tfou) 65%, #b91c1c);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
+    }
+
+    .ball-disney {
+      background: radial-gradient(circle at 32% 30%, #93c5fd, var(--disney) 65%, #1d4ed8);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.85);
+    }
+
+    .day-mini-label {
+      margin-top: 6px;
+      font-size: 0.69rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 680px) {
+      .day-mini-label {
+        display: none;
+      }
+      .ball-badge {
+        width: 11px;
+        height: 11px;
+      }
+    }
+
+    /* Painel Lateral do Dia Selecionado */
+    .day-inspector {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      position: sticky;
+      top: 84px;
+    }
+
+    @media (max-width: 1080px) {
+      .day-inspector {
+        position: static;
+      }
+    }
+
+    .inspector-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .inspector-kicker {
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-weight: 800;
+      color: #c4b5fd;
+    }
+
+    .inspector-date {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-top: 2px;
+      text-transform: capitalize;
+    }
+
+    .inspector-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .event-card {
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      background: rgba(10, 14, 24, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-left-width: 4px;
+      transition: var(--transition);
+    }
+
+    .event-card:hover {
+      transform: translateX(2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .event-card.net-gloob {
+      border-left-color: var(--gloob);
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(10, 14, 24, 0.82));
+    }
+
+    .event-card.net-tfou {
+      border-left-color: var(--tfou);
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), rgba(10, 14, 24, 0.82));
+    }
+
+    .event-card.net-disney {
+      border-left-color: var(--disney);
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(10, 14, 24, 0.82));
+    }
+
+    .event-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .net-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .net-pill.gloob {
+      background: var(--gloob-bg);
+      color: #6ee7b7;
+      border: 1px solid var(--gloob-border);
+    }
+
+    .net-pill.tfou {
+      background: var(--tfou-bg);
+      color: #fca5a5;
+      border: 1px solid var(--tfou-border);
+    }
+
+    .net-pill.disney {
+      background: var(--disney-bg);
+      color: #93c5fd;
+      border: 1px solid var(--disney-border);
+    }
+
+    .event-time {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .event-ep-code {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: #fff;
+    }
+
+    .event-ep-title {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .badge-world {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--gold-bg);
+      color: var(--gold);
+      border: 1px solid var(--gold-border);
+    }
+
+    .badge-special {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(236, 72, 153, 0.16);
+      color: #f9a8d4;
+      border: 1px solid rgba(236, 72, 153, 0.4);
+    }
+
+    .empty-day {
+      text-align: center;
+      padding: 28px 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+    }
+
+    .empty-day p {
+      font-size: 0.86rem;
+      margin-top: 6px;
+    }
+
+    .inspector-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .inspector-footer .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* Resumo de meses com lançamentos */
+    .months-strip {
+      margin-top: 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 16px 20px;
+    }
+
+    .months-strip-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .months-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .month-jump-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .month-jump-pill:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .month-jump-pill.current {
+      border-color: rgba(167, 139, 250, 0.55);
+      color: #fff;
+      background: rgba(139, 92, 246, 0.18);
+    }
+
+    .count-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-logo">RP</div>
+        <div class="brand-text">
+          <strong>SÉRIE RP HUB</strong>
+          <span>Universo Broadcast & Estreias</span>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">🗂️ Temporadas & Eps</a>
+        <a class="nav-link" href="estreias.html">🎬 Marcar Estreias</a>
+        <a class="nav-link active" href="calendario.html">📅 Calendário</a>
+        <a class="nav-link" href="emissoras.html">📺 Emissoras</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="hero-bar">
+      <div>
+        <h1 class="hero-title">Calendário Mensal de Estreias</h1>
+        <p class="hero-sub">
+          Navega pelos meses e dias. Cada bolinha mostra o lançamento do dia na cor oficial da emissora e podes clicar em qualquer dia para ver todos os episódios.
+        </p>
+      </div>
+    </header>
+
+    <!-- Legenda & Filtro Rápido por Emissora -->
+    <section class="legend-strip" aria-label="Legenda de emissoras">
+      <div class="legend-items">
+        <button type="button" class="legend-chip active-filter" data-filter="ALL" onclick="setNetworkFilter('ALL')">
+          <span class="dot dot-all"></span>
+          Todas as Emissoras
+        </button>
+        <button type="button" class="legend-chip" data-filter="Gloob" onclick="setNetworkFilter('Gloob')">
+          <span class="dot dot-gloob"></span>
+          Gloob (Verde)
+        </button>
+        <button type="button" class="legend-chip" data-filter="TFOU" onclick="setNetworkFilter('TFOU')">
+          <span class="dot dot-tfou"></span>
+          TFOU (Vermelho)
+        </button>
+        <button type="button" class="legend-chip" data-filter="Disney Channel" onclick="setNetworkFilter('Disney Channel')">
+          <span class="dot dot-disney"></span>
+          Disney Channel (Azul)
+        </button>
+      </div>
+
+      <div class="legend-world">
+        <span>👑</span>
+        <span>Estreia Mundial no Dia</span>
+      </div>
+    </section>
+
+    <!-- Barra de Navegação de Mês -->
+    <section class="cal-controls">
+      <div class="month-nav">
+        <button type="button" class="btn btn-icon" onclick="changeMonth(-1)" title="Mês anterior" aria-label="Mês anterior">‹</button>
+        <button type="button" class="btn btn-icon" onclick="changeMonth(1)" title="Próximo mês" aria-label="Próximo mês">›</button>
+        <div class="month-title-wrap">
+          <h2 id="monthTitle" class="month-title">Novembro 2026</h2>
+          <p id="monthSummary" class="month-meta">0 lançamentos neste mês</p>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button type="button" class="btn" onclick="goToToday()">Hoje</button>
+        <button type="button" class="btn" onclick="goToNextRelease()">⏭️ Próxima Estreia</button>
+        <a href="estreias.html" class="btn btn-accent">+ Marcar Estreia</a>
+      </div>
+    </section>
+
+    <!-- Grade + Detalhes do Dia -->
+    <div class="cal-layout">
+      <section class="calendar-shell" aria-label="Calendário">
+        <div class="weekdays-row">
+          <div class="weekday-cell">Seg</div>
+          <div class="weekday-cell">Ter</div>
+          <div class="weekday-cell">Qua</div>
+          <div class="weekday-cell">Qui</div>
+          <div class="weekday-cell">Sex</div>
+          <div class="weekday-cell">Sáb</div>
+          <div class="weekday-cell">Dom</div>
+        </div>
+        <div id="daysGrid" class="days-grid"></div>
+      </section>
+
+      <aside id="dayInspector" class="day-inspector" aria-label="Detalhes do dia selecionado">
+        <div class="inspector-header">
+          <div class="inspector-kicker">Programação do Dia</div>
+          <h3 id="selectedDateTitle" class="inspector-date">—</h3>
+          <p id="selectedDateSub" class="inspector-sub">Clica num dia do calendário</p>
+        </div>
+        <div id="selectedDayEvents" class="event-list"></div>
+        <div class="inspector-footer">
+          <a href="estreias.html" class="btn btn-accent">🎬 Ir para Estreias</a>
+          <a href="index.html" class="btn">🗂️ Ver Temporadas</a>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Atalhos de Meses com Estreias -->
+    <section class="months-strip">
+      <div class="months-strip-title">Meses com Lançamentos Agendados</div>
+      <div id="monthsJumpList" class="months-pills"></div>
+    </section>
+  </main>
+
+  <script>
+    const SEASONS_STORAGE_KEY = 'series_rp_seasons_db_v1';
+    const BROADCASTS_STORAGE_KEY = 'series_rp_broadcasts_v1';
+
+    const NETWORK_META = {
+      'Gloob': {
+        key: 'gloob',
+        label: 'Gloob',
+        ballClass: 'ball-gloob',
+        pillClass: 'gloob',
+        cardClass: 'net-gloob'
+      },
+      'TFOU': {
+        key: 'tfou',
+        label: 'TFOU',
+        ballClass: 'ball-tfou',
+        pillClass: 'tfou',
+        cardClass: 'net-tfou'
+      },
+      'Disney Channel': {
+        key: 'disney',
+        label: 'Disney Channel',
+        ballClass: 'ball-disney',
+        pillClass: 'disney',
+        cardClass: 'net-disney'
+      }
+    };
+
+    const now = new Date();
+    let viewYear = now.getFullYear();
+    let viewMonth = now.getMonth(); // 0-11
+    let selectedDateKey = formatDateKey(now);
+    let activeNetworkFilter = 'ALL';
+
+    function formatDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseDateFromISO(isoString) {
+      if (!isoString) return null;
+      const d = new Date(isoString);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function loadSeasonsMap() {
+      try {
+        const raw = localStorage.getItem(SEASONS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        const seasons = Array.isArray(parsed) ? parsed : (parsed.seasons || []);
+        const epMap = new Map();
+
+        seasons.forEach((season, sIdx) => {
+          const sNum = Number(season.number || season.seasonNumber || sIdx + 1);
+          const episodes = Array.isArray(season.episodes) ? season.episodes : [];
+          episodes.forEach((ep, eIdx) => {
+            const epNum = Number(ep.number || ep.epNumber || eIdx + 1);
+            const code = `T${sNum} EP${String(epNum).padStart(2, '0')}`;
+            const info = {
+              id: ep.id || `${sNum}-${epNum}`,
+              seasonNumber: sNum,
+              epNumber: epNum,
+              code,
+              title: ep.title || ep.name || `Episódio ${epNum}`,
+              isSpecial: Boolean(ep.isSpecial || ep.special),
+              specialLabel: ep.specialLabel || ep.specialTag || 'ESPECIAL'
+            };
+            epMap.set(String(info.id), info);
+            epMap.set(code.toLowerCase(), info);
+          });
+        });
+
+        return epMap;
+      } catch (err) {
+        console.error('Erro ao ler temporadas:', err);
+        return new Map();
+      }
+    }
+
+    function loadBroadcasts() {
+      try {
+        const raw = localStorage.getItem(BROADCASTS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        const items = Array.isArray(parsed) ? parsed : (parsed.broadcasts || parsed.schedules || []);
+        const epMap = loadSeasonsMap();
+
+        const normalized = items
+          .map((item, index) => {
+            const rawDate = item.datetime || item.dateTime || item.date || item.airDate || '';
+            const dt = parseDateFromISO(rawDate);
+            if (!dt) return null;
+
+            const networkRaw = item.network || item.emissora || item.channel || '';
+            const network = NETWORK_META[networkRaw] ? networkRaw : normalizeNetworkName(networkRaw);
+            if (!network) return null;
+
+            const matchedEp =
+              (item.episodeId && epMap.get(String(item.episodeId))) ||
+              (item.code && epMap.get(String(item.code).toLowerCase())) ||
+              null;
+
+            const sNum = Number(item.seasonNumber || item.season || matchedEp?.seasonNumber || 1);
+            const epNum = Number(item.epNumber || item.episodeNumber || item.episode || matchedEp?.epNumber || 1);
+            const epKey = matchedEp ? matchedEp.id : `S${sNum}-E${epNum}`;
+            const epCode = matchedEp ? matchedEp.code : `T${sNum} EP${String(epNum).padStart(2, '0')}`;
+            const title = item.title || item.episodeTitle || matchedEp?.title || `Episódio ${epNum}`;
+            const isSpecial = Boolean(item.isSpecial || matchedEp?.isSpecial);
+            const specialLabel = item.specialLabel || matchedEp?.specialLabel || 'ESPECIAL';
+
+            return {
+              id: item.id || `bc-${index}-${dt.getTime()}`,
+              network,
+              dateObj: dt,
+              timestamp: dt.getTime(),
+              dateKey: formatDateKey(dt),
+              timeFormatted: dt.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }),
+              epKey,
+              epCode,
+              title,
+              isSpecial,
+              specialLabel,
+              isWorldPremiere: false
+            };
+          })
+          .filter(Boolean);
+
+        // Calcula Estreia Mundial por episódio (menor timestamp global para o mesmo episódio)
+        const earliestByEp = new Map();
+        normalized.forEach((ev) => {
+          const prev = earliestByEp.get(ev.epKey);
+          if (!prev || ev.timestamp < prev.timestamp) {
+            earliestByEp.set(ev.epKey, ev);
+          }
+        });
+
+        earliestByEp.forEach((earliestEv) => {
+          earliestEv.isWorldPremiere = true;
+        });
+
+        return normalized.sort((a, b) => a.timestamp - b.timestamp);
+      } catch (err) {
+        console.error('Erro ao ler transmissões:', err);
+        return [];
+      }
+    }
+
+    function normalizeNetworkName(val) {
+      const s = String(val || '').toLowerCase().trim();
+      if (s.includes('gloob')) return 'Gloob';
+      if (s.includes('tfou')) return 'TFOU';
+      if (s.includes('disney')) return 'Disney Channel';
+      return null;
+    }
+
+    function getFilteredBroadcasts() {
+      const all = loadBroadcasts();
+      if (activeNetworkFilter === 'ALL') return all;
+      return all.filter((ev) => ev.network === activeNetworkFilter);
+    }
+
+    function setNetworkFilter(net) {
+      activeNetworkFilter = net;
+      document.querySelectorAll('.legend-chip').forEach((chip) => {
+        chip.classList.toggle('active-filter', chip.dataset.filter === net);
+      });
+      renderAll();
+    }
+
+    function changeMonth(delta) {
+      const target = new Date(viewYear, viewMonth + delta, 1);
+      viewYear = target.getFullYear();
+      viewMonth = target.getMonth();
+      renderCalendar();
+      renderMonthSummary();
+    }
+
+    function goToToday() {
+      const t = new Date();
+      viewYear = t.getFullYear();
+      viewMonth = t.getMonth();
+      selectedDateKey = formatDateKey(t);
+      renderAll();
+    }
+
+    function goToNextRelease() {
+      const events = getFilteredBroadcasts();
+      if (!events.length) return;
+      const nowTs = Date.now();
+      const upcoming = events.find((e) => e.timestamp >= nowTs) || events[0];
+      viewYear = upcoming.dateObj.getFullYear();
+      viewMonth = upcoming.dateObj.getMonth();
+      selectedDateKey = upcoming.dateKey;
+      renderAll();
+    }
+
+    function selectDay(dateKey) {
+      selectedDateKey = dateKey;
+      document.querySelectorAll('.day-cell').forEach((cell) => {
+        cell.classList.toggle('is-selected', cell.dataset.dateKey === dateKey);
+      });
+      renderDayInspector();
+    }
+
+    function renderAll() {
+      renderCalendar();
+      renderDayInspector();
+      renderMonthSummary();
+      renderMonthsJumpList();
+    }
+
+    function renderMonthSummary() {
+      const events = getFilteredBroadcasts();
+      const monthEvents = events.filter((ev) => {
+        return ev.dateObj.getFullYear() === viewYear && ev.dateObj.getMonth() === viewMonth;
+      });
+
+      const monthName = new Date(viewYear, viewMonth, 1).toLocaleDateString('pt-PT', {
+        month: 'long',
+        year: 'numeric'
+      });
+
+      document.getElementById('monthTitle').textContent = monthName;
+
+      const total = monthEvents.length;
+      const worldCount = monthEvents.filter((e) => e.isWorldPremiere).length;
+      const filterText = activeNetworkFilter === 'ALL' ? 'todas as emissoras' : activeNetworkFilter;
+
+      document.getElementById('monthSummary').textContent =
+        `${total} ${total === 1 ? 'lançamento' : 'lançamentos'} em ${filterText}` +
+        (worldCount ? ` • ${worldCount} ${worldCount === 1 ? 'estreia mundial' : 'estreias mundiais'}` : '');
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('daysGrid');
+      grid.style.animation = 'none';
+      void grid.offsetWidth;
+      grid.style.animation = '';
+
+      const events = getFilteredBroadcasts();
+      const eventsByDate = new Map();
+      events.forEach((ev) => {
+        if (!eventsByDate.has(ev.dateKey)) eventsByDate.set(ev.dateKey, []);
+        eventsByDate.get(ev.dateKey).push(ev);
+      });
+
+      const firstDayOfMonth = new Date(viewYear, viewMonth, 1);
+      // Segunda-feira = 0, Domingo = 6
+      const startOffset = (firstDayOfMonth.getDay() + 6) % 7;
+      const gridStartDate = new Date(viewYear, viewMonth, 1 - startOffset);
+
+      const todayKey = formatDateKey(new Date());
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < 42; i++) {
+        const cellDate = new Date(
+          gridStartDate.getFullYear(),
+          gridStartDate.getMonth(),
+          gridStartDate.getDate() + i
+        );
+        const dateKey = formatDateKey(cellDate);
+        const isOutside = cellDate.getMonth() !== viewMonth;
+        const isToday = dateKey === todayKey;
+        const isSelected = dateKey === selectedDateKey;
+        const dayEvents = eventsByDate.get(dateKey) || [];
+
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'day-cell';
+        cell.dataset.dateKey = dateKey;
+
+        if (isOutside) cell.classList.add('outside-month');
+        if (isToday) cell.classList.add('is-today');
+        if (isSelected) cell.classList.add('is-selected');
+
+        const uniqueNetworks = [...new Set(dayEvents.map((e) => e.network))];
+        const hasWorld = dayEvents.some((e) => e.isWorldPremiere);
+
+        if (dayEvents.length > 0) {
+          cell.classList.add('has-events');
+          if (uniqueNetworks.length === 1) {
+            const netKey = NETWORK_META[uniqueNetworks[0]]?.key;
+            if (netKey) cell.classList.add(`only-${netKey}`);
+          } else if (uniqueNetworks.length > 1) {
+            cell.classList.add('multi-network');
+          }
+        }
+
+        const topDiv = document.createElement('div');
+        topDiv.className = 'day-top';
+
+        const numSpan = document.createElement('span');
+        numSpan.className = 'day-number';
+        numSpan.textContent = cellDate.getDate();
+        topDiv.appendChild(numSpan);
+
+        if (hasWorld) {
+          const crown = document.createElement('span');
+          crown.className = 'world-crown';
+          crown.textContent = '👑';
+          crown.title = 'Contém Estreia Mundial';
+          topDiv.appendChild(crown);
+        }
+
+        cell.appendChild(topDiv);
+
+        if (dayEvents.length > 0) {
+          const dotsDiv = document.createElement('div');
+          dotsDiv.className = 'dots-cluster';
+
+          // Mostra uma bolinha por lançamento (ou por emissora no dia)
+          dayEvents.forEach((ev) => {
+            const meta = NETWORK_META[ev.network];
+            if (!meta) return;
+            const ball = document.createElement('span');
+            ball.className = `ball-badge ${meta.ballClass}`;
+            ball.title = `${meta.label}: ${ev.epCode} (${ev.timeFormatted})${ev.isWorldPremiere ? ' • Estreia Mundial' : ''}`;
+            dotsDiv.appendChild(ball);
+          });
+
+          cell.appendChild(dotsDiv);
+
+          const labelDiv = document.createElement('div');
+          labelDiv.className = 'day-mini-label';
+          labelDiv.textContent =
+            dayEvents.length === 1
+              ? `${dayEvents[0].epCode} • ${dayEvents[0].network}`
+              : `${dayEvents.length} estreias no dia`;
+          cell.appendChild(labelDiv);
+        }
+
+        cell.addEventListener('click', () => selectDay(dateKey));
+        fragment.appendChild(cell);
+      }
+
+      grid.innerHTML = '';
+      grid.appendChild(fragment);
+    }
+
+    function renderDayInspector() {
+      const [y, m, d] = selectedDateKey.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+
+      const formattedLong = dateObj.toLocaleDateString('pt-PT', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      const events = getFilteredBroadcasts().filter((ev) => ev.dateKey === selectedDateKey);
+
+      document.getElementById('selectedDateTitle').textContent = formattedLong;
+      document.getElementById('selectedDateSub').textContent =
+        events.length === 0
+          ? 'Sem lançamentos agendados neste dia'
+          : `${events.length} ${events.length === 1 ? 'lançamento agendado' : 'lançamentos agendados'}`;
+
+      const listEl = document.getElementById('selectedDayEvents');
+      if (!events.length) {
+        listEl.innerHTML = `
+          <div class="empty-day">
+            <div style="font-size:1.6rem;">🗓️</div>
+            <strong>Dia livre na grelha</strong>
+            <p>Nenhum episódio marcado para este dia${activeNetworkFilter !== 'ALL' ? ` no ${activeNetworkFilter}` : ''}.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = events
+        .map((ev) => {
+          const meta = NETWORK_META[ev.network];
+          return `
+            <article class="event-card ${meta.cardClass}">
+              <div class="event-top">
+                <span class="net-pill ${meta.pillClass}">
+                  <span class="dot dot-${meta.key}"></span>
+                  ${meta.label}
+                </span>
+                <span class="event-time">🕒 ${ev.timeFormatted}</span>
+              </div>
+              <div class="event-ep-code">${escapeHtml(ev.epCode)}</div>
+              <div class="event-ep-title">${escapeHtml(ev.title)}</div>
+              <div class="badges-row">
+                ${ev.isWorldPremiere ? `<span class="badge-world">👑 Estreia Mundial</span>` : ''}
+                ${ev.isSpecial ? `<span class="badge-special">✨ ${escapeHtml(ev.specialLabel)}</span>` : ''}
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    function renderMonthsJumpList() {
+      const events = getFilteredBroadcasts();
+      const container = document.getElementById('monthsJumpList');
+
+      if (!events.length) {
+        container.innerHTML = `<span style="color:var(--text-dim);font-size:0.84rem;">Ainda não existem lançamentos registados em <code>estreias.html</code>.</span>`;
+        return;
+      }
+
+      const monthCounts = new Map();
+      events.forEach((ev) => {
+        const key = `${ev.dateObj.getFullYear()}-${ev.dateObj.getMonth()}`;
+        if (!monthCounts.has(key)) {
+          monthCounts.set(key, {
+            year: ev.dateObj.getFullYear(),
+            month: ev.dateObj.getMonth(),
+            count: 0
+          });
+        }
+        monthCounts.get(key).count += 1;
+      });
+
+      const sortedMonths = [...monthCounts.values()].sort((a, b) =>
+        a.year !== b.year ? a.year - b.year : a.month - b.month
+      );
+
+      container.innerHTML = sortedMonths
+        .map((item) => {
+          const label = new Date(item.year, item.month, 1).toLocaleDateString('pt-PT', {
+            month: 'short',
+            year: 'numeric'
+          });
+          const isCurrent = item.year === viewYear && item.month === viewMonth;
+          return `
+            <button
+              type="button"
+              class="month-jump-pill ${isCurrent ? 'current' : ''}"
+              onclick="jumpToMonth(${item.year}, ${item.month})"
+            >
+              <span>${label}</span>
+              <span class="count-tag">${item.count}</span>
+            </button>
+          `;
+        })
+        .join('');
+    }
+
+    function jumpToMonth(year, month) {
+      viewYear = year;
+      viewMonth = month;
+      renderCalendar();
+      renderMonthSummary();
+      renderMonthsJumpList();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === BROADCASTS_STORAGE_KEY || e.key === SEASONS_STORAGE_KEY) {
+        renderAll();
+      }
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
